@@ -1,0 +1,228 @@
+C51 COMPILER V9.01   MATRIXKEY                                                             09/25/2016 09:01:39 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MATRIXKEY
+OBJECT MODULE PLACED IN matrixkey.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE matrixkey.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          sbit dula=P2^6;
+   5          sbit wela=P2^7;
+   6          sbit led1=P1^0;
+   7          uchar code table[]={
+   8                  0x3f,
+   9                  0x06,
+  10                  0x5b,
+  11                  0x4f,
+  12                  0x66,
+  13                  0x6d,
+  14                  0x7d,
+  15                  0x07,
+  16                  0x7f,
+  17                  0x6f,
+  18                  0x77,
+  19                  0x7c,
+  20                  0x39,
+  21                  0x5e,
+  22                  0x79,
+  23                  0x71,
+  24                  //nothing to click;
+  25                  0x80
+  26          };
+  27          void delayms(uint xms){
+  28   1              uint i,j;
+  29   1              for(i=xms;i>0;i--){
+  30   2                      for(j=110;j>0;j--){
+  31   3                              //nothing to do
+  32   3                      }
+  33   2              }
+  34   1      } 
+  35          void display(uchar num){
+  36   1              P0=table[num];
+  37   1              dula=1;
+  38   1              dula=0;
+  39   1      }
+  40          void matrixkeyscan(){
+  41   1              //display(5);
+  42   1              uchar temp,key;
+  43   1              //scan line 1
+  44   1              P3=0xfe;
+  45   1              temp=P3;
+  46   1              temp=temp&0xf0;
+  47   1              if (temp!=0xf0)
+  48   1              {
+  49   2                      delayms(10);
+  50   2                      temp=P3;
+  51   2                      temp=temp&0xf0;
+  52   2                      if (temp!=0xf0)
+  53   2                      {
+  54   3                              temp=P3;
+  55   3                              switch(temp){
+C51 COMPILER V9.01   MATRIXKEY                                                             09/25/2016 09:01:39 PAGE 2   
+
+  56   4                                      case 0xee:
+  57   4                                           key=0;
+  58   4                                           break;
+  59   4                                      case 0xde:
+  60   4                                           key=1;
+  61   4                                           break;
+  62   4                                      case 0xbe:
+  63   4                                           key=2;
+  64   4                                           break;
+  65   4                                      case 0x7e:
+  66   4                                           key=3;
+  67   4                                           break;
+  68   4                              }
+  69   3                              //wait the key
+  70   3                              while(temp!=0xf0){
+  71   4                                      temp=P3;
+  72   4                                      temp=temp&0xf0;
+  73   4                              }
+  74   3                              display(key);
+  75   3                      }
+  76   2              }
+  77   1              //scan line 2
+  78   1              P3=0xfd;
+  79   1              temp=P3;
+  80   1              temp=temp&0xf0;
+  81   1              if (temp!=0xf0)
+  82   1              {
+  83   2                      delayms(10);
+  84   2                      temp=P3;
+  85   2                      temp=temp&0xf0;
+  86   2                      if (temp!=0xf0)
+  87   2                      {
+  88   3                              temp=P3;
+  89   3                              switch(temp){
+  90   4                                      case 0xed:
+  91   4                                           key=4;
+  92   4                                           break;
+  93   4                                      case 0xdd:
+  94   4                                           key=5;
+  95   4                                           break;
+  96   4                                      case 0xbd:
+  97   4                                           key=6;
+  98   4                                           break;
+  99   4                                      case 0x7d:
+ 100   4                                           key=7;
+ 101   4                                           break;
+ 102   4                              }
+ 103   3                              //wait the key
+ 104   3                              while(temp!=0xf0){
+ 105   4                                      temp=P3;
+ 106   4                                      temp=temp&0xf0;
+ 107   4                              }
+ 108   3                              display(key);
+ 109   3                      }
+ 110   2              }
+ 111   1              //scan line 3
+ 112   1              P3=0xfb;
+ 113   1              temp=P3;
+ 114   1              temp=temp&0xf0;
+ 115   1              if (temp!=0xf0)
+ 116   1              {
+ 117   2                      delayms(10);
+C51 COMPILER V9.01   MATRIXKEY                                                             09/25/2016 09:01:39 PAGE 3   
+
+ 118   2                      temp=P3;
+ 119   2                      temp=temp&0xf0;
+ 120   2                      if (temp!=0xf0)
+ 121   2                      {
+ 122   3                              temp=P3;
+ 123   3                              switch(temp){
+ 124   4                                      case 0xeb:
+ 125   4                                           key=8;
+ 126   4                                           break;
+ 127   4                                      case 0xdb:
+ 128   4                                           key=9;
+ 129   4                                           break;
+ 130   4                                      case 0xbb:
+ 131   4                                           key=10;
+ 132   4                                           break;
+ 133   4                                      case 0x7b:
+ 134   4                                           key=11;
+ 135   4                                           break;
+ 136   4                              }
+ 137   3                              //wait the key
+ 138   3                              while(temp!=0xf0){
+ 139   4                                      temp=P3;
+ 140   4                                      temp=temp&0xf0;
+ 141   4                              }
+ 142   3                              display(key);
+ 143   3                      }
+ 144   2              }
+ 145   1              //scan line 4
+ 146   1              P3=0xf7;
+ 147   1              temp=P3;
+ 148   1              temp=temp&0xf0;
+ 149   1              if (temp!=0xf0)
+ 150   1              {
+ 151   2                      delayms(10);
+ 152   2                      temp=P3;
+ 153   2                      temp=temp&0xf0;
+ 154   2                      if (temp!=0xf0)
+ 155   2                      {
+ 156   3                              temp=P3;
+ 157   3                              switch(temp){
+ 158   4                                      case 0xe7:
+ 159   4                                           key=12;
+ 160   4                                           break;
+ 161   4                                      case 0xd7:
+ 162   4                                           key=13;
+ 163   4                                           break;
+ 164   4                                      case 0xb7:
+ 165   4                                           key=14;
+ 166   4                                           break;
+ 167   4                                      case 0x77:
+ 168   4                                           key=15;
+ 169   4                                           break;
+ 170   4                              }
+ 171   3                              //wait the key
+ 172   3                              while(temp!=0xf0){
+ 173   4                                      temp=P3;
+ 174   4                                      temp=temp&0xf0;
+ 175   4                              }
+ 176   3                              display(key);
+ 177   3                      }                                               
+ 178   2              }
+ 179   1              //if nothing to click
+C51 COMPILER V9.01   MATRIXKEY                                                             09/25/2016 09:01:39 PAGE 4   
+
+ 180   1              // if(P3==0xf7){
+ 181   1              //     display(16);
+ 182   1              // }
+ 183   1      }
+ 184          //main
+ 185          void main(){
+ 186   1              P0=0;
+ 187   1              dula=1;
+ 188   1              //light 8
+ 189   1              P0=0x00;
+ 190   1              dula=0;
+ 191   1              wela=1;
+ 192   1              wela=0;
+ 193   1              while(1){
+ 194   2                      matrixkeyscan();
+ 195   2                      //display(15);
+ 196   2              }
+ 197   1              
+ 198   1        
+ 199   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    417    ----
+   CONSTANT SIZE    =     17    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

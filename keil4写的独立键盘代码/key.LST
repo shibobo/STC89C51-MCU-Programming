@@ -1,0 +1,160 @@
+C51 COMPILER V9.01   KEY                                                                   09/24/2016 20:37:24 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN key.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE key.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          //key define
+   5          sbit key1=P3^0;
+   6          sbit key2=P3^1;
+   7          sbit key3=P3^2;
+   8          sbit key4=P3^3;
+   9          sbit dula=P2^6;
+  10          sbit wela=P2^7;
+  11          uchar code table[]={
+  12                  0x3f,
+  13                  0x06,
+  14                  0x5b,
+  15                  0x4f,
+  16                  0x66,
+  17                  0x6d,
+  18                  0x7d,
+  19                  0x07,
+  20                  0x7f,
+  21                  0x6f,
+  22                  0x77,
+  23                  0x7c,
+  24                  0x39,
+  25                  0x5e,
+  26                  0x79,
+  27                  0x71
+  28          };
+  29          void delayms(uint);
+  30          void display(uchar);
+  31          void init();
+  32          void keyscan();
+  33          uchar num0,num;
+  34          //main
+  35          void main(){
+  36   1          printf("hello world");
+*** WARNING C206 IN LINE 36 OF KEY.C: 'printf': missing function-prototype
+*** ERROR C267 IN LINE 36 OF KEY.C: 'printf': requires ANSI-style prototype
+  37   1              //init
+  38   1              init(); 
+  39   1              while(1){
+  40   2                      //key scan
+  41   2                      
+  42   2                      display(num);
+  43   2                      keyscan();
+  44   2              }
+  45   1              
+  46   1      }
+  47          void init(){
+  48   1              TMOD=0x01;
+  49   1              TH0=(65536-45872)/256;
+  50   1              TL0=(65536-45872)%256;
+  51   1              EA=1;
+  52   1              ET0=1;
+  53   1              TR0=1;
+C51 COMPILER V9.01   KEY                                                                   09/24/2016 20:37:24 PAGE 2   
+
+  54   1      }
+  55          void delayms(uint xms){
+  56   1              uint i,j;
+  57   1              for(i=xms;i>0;i--){
+  58   2                      for(j=110;j>0;j--){
+  59   3                              //nothing to do
+  60   3                      }
+  61   2              }
+  62   1      
+  63   1      }
+  64          void display(uchar numdis){
+  65   1              uchar shi,ge;
+  66   1              shi=numdis/10;
+  67   1              ge=numdis%10;
+  68   1      
+  69   1              dula=1;
+  70   1              P0=table[shi];
+  71   1              dula=0;
+  72   1              P0=0xff;
+  73   1              wela=1;
+  74   1              P0=0xfe;
+  75   1              wela=0;
+  76   1              delayms(5);
+  77   1      
+  78   1              dula=1;
+  79   1              P0=table[ge];
+  80   1              dula=0;
+  81   1              P0=0xff;
+  82   1              wela=1;
+  83   1              P0=0xfd;
+  84   1              wela=0;
+  85   1              delayms(5);
+  86   1      }
+  87          //define interrupt 1
+  88          void T0_time() interrupt 1{
+  89   1              TH0=(65536-45872)/256;
+  90   1              TL0=(65536-45872)%256;
+  91   1              num0++;
+  92   1              if(num0==20){
+  93   2                      num0=0;
+  94   2                      num++;
+  95   2                      if (num==60)
+  96   2                      {
+  97   3                              num=0;
+  98   3                      }
+  99   2              }
+ 100   1      }
+ 101          //do different thing according the different key
+ 102          void keyscan(){
+ 103   1              //key1 is clicked
+ 104   1              if(key1==0){
+ 105   2                      delayms(10);
+ 106   2                      if(key1==0){
+ 107   3                              num++;
+ 108   3                              if(num==60){
+ 109   4                                      num=0;
+ 110   4                              }
+ 111   3                              while(!key1);
+ 112   3                      }
+ 113   2              }
+ 114   1              //key2 is clicked
+ 115   1              if(key2==0){
+C51 COMPILER V9.01   KEY                                                                   09/24/2016 20:37:24 PAGE 3   
+
+ 116   2                      delayms(10);
+ 117   2                      if(key2==0){
+ 118   3                              num--;
+ 119   3                              if (num==0)
+ 120   3                              {
+ 121   4                                      num=60;
+ 122   4                              }
+ 123   3                              while(!key2);
+ 124   3                      }
+ 125   2              }
+ 126   1              //key3 is clicked
+ 127   1              if(key3==0){
+ 128   2                  delayms(10);
+ 129   2                      if(key3==0){
+ 130   3                      //reset the num
+ 131   3                          num=0;
+ 132   3                              while(!key3);
+ 133   3                      }
+ 134   2              }
+ 135   1              //key4 is clicked
+ 136   1              if(key4==0){
+ 137   2                  delayms(10);
+ 138   2                      if(key4==0){
+ 139   3                          while(!key4);
+ 140   3                              TR0=~TR0;
+ 141   3                      }
+ 142   2              }
+ 143   1      }
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  1 ERROR(S)

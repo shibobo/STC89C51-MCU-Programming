@@ -1,0 +1,136 @@
+C51 COMPILER V9.01   MAIN                                                                  09/26/2016 22:24:38 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #define uint unsigned int
+   4          #define uchar unsigned char
+   5          sbit we=P2^7;
+   6          sbit du=P2^6;
+   7          uchar count0,count1;
+   8          uchar temp0,temp1=0x7f;
+   9          uchar code leddata[]={ 
+  10                          0x3F,  //"0"
+  11                          0x06,  //"1"
+  12                          0x5B,  //"2"
+  13                          0x4F,  //"3"
+  14                          0x66,  //"4"
+  15                          0x6D,  //"5"
+  16                          0x7D,  //"6"
+  17                          0x07,  //"7"
+  18                          0x7F,  //"8"
+  19                          0x6F,  //"9"
+  20                          0x77,  //"A"
+  21                          0x7C,  //"B"
+  22                          0x39,  //"C"
+  23                          0x5E,  //"D"
+  24                          0x79,  //"E"
+  25                          0x71,  //"F"
+  26                          0x76,  //"H"
+  27                          0x38,  //"L"
+  28                          0x37,  //"n"
+  29                          0x3E,  //"u"
+  30                          0x73,  //"P"
+  31                          0x5C,  //"o"
+  32                          0x40,  //"-"
+  33                          0x00,  //熄灭
+  34                          0x00  //自定义 
+  35                          };
+  36          void delayms(uint z){
+  37   1          uint x,y;
+  38   1              for(x=z;x>0;x--)
+  39   1                  for(y=114;y>0;y--);
+  40   1      }
+  41          void display(uchar i){
+  42   1          uchar shi,ge;
+  43   1              shi=i/10;
+  44   1              ge=i%10;
+  45   1      
+  46   1              P0=0xff;
+  47   1              we=1;
+  48   1              P0=0xfe;//点亮第1位数码管
+  49   1              we=0;
+  50   1      
+  51   1              du=1;
+  52   1              P0=leddata[shi];
+  53   1              du=0;
+  54   1              delayms(5);
+  55   1      
+C51 COMPILER V9.01   MAIN                                                                  09/26/2016 22:24:38 PAGE 2   
+
+  56   1              P0=0xff;
+  57   1              we=1;
+  58   1              P0=0xfd;//点亮第2位数码管
+  59   1              we=0;
+  60   1      
+  61   1              du=1;
+  62   1              P0=leddata[ge];
+  63   1              du=0;
+  64   1              delayms(5);
+  65   1      }
+  66          void init(){
+  67   1          TMOD=0x11;//定时器T0，T1
+  68   1              TH1=TH0=0x4b;
+  69   1              TL1=TL0=0xfd;
+  70   1              ET1=ET0=1;
+  71   1              TR1=TR0=1;
+  72   1              //EX0=1; //开外部中断0
+  73   1              //IT0=0; //外部中断0为低电平触发方式
+  74   1              EA=1;  //开总中断
+  75   1      }
+  76          //main
+  77          void main(){
+  78   1          init();//调用配置函数
+  79   1              while(1){
+  80   2                  display(temp0);//数码管显示
+  81   2              }
+  82   1      }
+  83          void int0() interrupt 0{
+  84   1          TR0=0;//关闭定时器0
+  85   1      }
+  86          void timer0() interrupt 1{
+  87   1          TH0=0x4b;
+  88   1              TL0=0xfd;
+  89   1              count0++;
+  90   1              if(count0==10){
+  91   2                  count0=0;
+  92   2                      temp0++;
+  93   2                      if(temp0>60){
+  94   3                          temp0=0;
+  95   3                      }
+  96   2              }
+  97   1      }
+  98          void timer1() interrupt 3{
+  99   1          TH1=0x4b;
+ 100   1              TL1=0xfd;
+ 101   1              count1++;
+ 102   1              if(count1==10){
+ 103   2                  count1=0;
+ 104   2                      P1=temp1;
+ 105   2                      temp1=_cror_(temp1,1);
+ 106   2              }
+ 107   1      
+ 108   1      
+ 109   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    228    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+C51 COMPILER V9.01   MAIN                                                                  09/26/2016 22:24:38 PAGE 3   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

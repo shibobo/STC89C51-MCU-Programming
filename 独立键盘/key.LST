@@ -1,0 +1,152 @@
+C51 COMPILER V8.08   KEY                                                                   09/24/2016 14:05:54 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN key.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE key.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          //key define
+   5          sbit key1=P3^0;
+   6          sbit key2=P3^1;
+   7          sbit key3=P3^2;
+   8          sbit key4=P3^3;
+   9          sbit dula=P2^6;
+  10          sbit wela=P2^7;
+  11          uchar code table[]={
+  12                  0x3f,
+  13                  0x06,
+  14                  0x5b,
+  15                  0x4f,
+  16                  0x66,
+  17                  0x6d,
+  18                  0x7d,
+  19                  0x07,
+  20                  0x7f,
+  21                  0x6f,
+  22                  0x77,
+  23                  0x7c,
+  24                  0x39,
+  25                  0x5e,
+  26                  0x79,
+  27                  0x71
+  28          };
+  29          void delayms(uint);
+  30          void display(uchar);
+  31          void init();
+  32          void keyscan();
+  33          uchar num0,num;
+  34          //main
+  35          void main(){
+  36   1              //init
+  37   1              init(); 
+  38   1              while(1){
+  39   2                      //key scan
+  40   2                      
+  41   2                      display(num);
+  42   2                      keyscan();
+  43   2              }
+  44   1              
+  45   1      }
+  46          void init(){
+  47   1              TMOD=0x01;
+  48   1              TH0=(65536-45872)/256;
+  49   1              TL0=(65536-45872)%256;
+  50   1              EA=1;
+  51   1              ET0=1;
+  52   1              TR0=1;
+  53   1      }
+  54          void delayms(uint xms){
+  55   1              uint i,j;
+C51 COMPILER V8.08   KEY                                                                   09/24/2016 14:05:54 PAGE 2   
+
+  56   1              for(i=xms;i>0;i--){
+  57   2                      for(j=110;j>0;j--){
+  58   3                              //nothing to do
+  59   3                      }
+  60   2              }
+  61   1      
+  62   1      }
+  63          void display(uchar numdis){
+  64   1              uchar shi,ge;
+  65   1              shi=numdis/10;
+  66   1              ge=numdis%10;
+  67   1      
+  68   1              dula=1;
+  69   1              P0=table[shi];
+  70   1              dula=0;
+  71   1              P0=0xff;
+  72   1              wela=1;
+  73   1              P0=0xfe;
+  74   1              wela=0;
+  75   1              delayms(5);
+  76   1      
+  77   1              dula=1;
+  78   1              P0=table[ge];
+  79   1              dula=0;
+  80   1              P0=0xff;
+  81   1              wela=1;
+  82   1              P0=0xfd;
+  83   1              wela=0;
+  84   1              delayms(5);
+  85   1      }
+  86          //define interrupt 1
+  87          void T0_time() interrupt 1{
+  88   1              TH0=(65536-45872)/256;
+  89   1              TL0=(65536-45872)%256;
+  90   1              num0++;
+  91   1              if(num0==200){
+  92   2                      num0=0;
+  93   2                      num++;
+  94   2                      if (num==60)
+  95   2                      {
+  96   3                              num=0;
+  97   3                      }
+  98   2              }
+  99   1      }
+ 100          void keyscan(){
+ 101   1              //key1 is clicked
+ 102   1              if(key1==0){
+ 103   2                      delayms(10);
+ 104   2                      if(key1==0){
+ 105   3                              num++;
+ 106   3                              if(num==60){
+ 107   4                                      num=0;
+ 108   4                              }
+ 109   3                              while(!key1);
+ 110   3                              
+ 111   3                      }
+ 112   2              }
+ 113   1              //key2 is clicked
+ 114   1              if(key2==0){
+ 115   2                      delayms(10);
+ 116   2                      if(key2==0){
+ 117   3                              num--;
+C51 COMPILER V8.08   KEY                                                                   09/24/2016 14:05:54 PAGE 3   
+
+ 118   3                              if (num==0)
+ 119   3                              {
+ 120   4                                      num=60;
+ 121   4                              }
+ 122   3                              while(!key2);
+ 123   3                      }
+ 124   2              }
+ 125   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    213    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

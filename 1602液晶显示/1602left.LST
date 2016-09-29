@@ -1,0 +1,93 @@
+C51 COMPILER V9.01   1602LEFT                                                              09/29/2016 12:38:41 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE 1602LEFT
+OBJECT MODULE PLACED IN 1602left.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE 1602left.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          //#include <intrins.h>
+   3          #include <stdlib.h>
+   4          #define uint unsigned int
+   5          #define uchar unsigned char
+   6          uchar code table[]="iloveyou";
+   7          uchar code table1[]="ilovemcu";
+   8          sbit leden=P3^4;//EN
+   9          sbit ledrs=P3^5;//RS
+  10          sbit ledrw=P3^6;//RW
+  11          sbit dula=P2^6;
+  12          sbit wela=P2^7;
+  13          uchar num;
+  14          uchar code a[]="cccd";
+  15          void delay(uint z){
+  16   1              uint x,y;
+  17   1              for(x=z;x>0;x--)
+  18   1                      for(y=114;y>0;y--);
+  19   1      }
+  20          void write_com(uchar com){
+  21   1              ledrs=0;
+  22   1              //ledrw=0;
+  23   1              P0=com;
+  24   1              delay(5);
+  25   1              leden=1;
+  26   1              delay(5);
+  27   1              leden=0;
+  28   1      }
+  29          void write_data(uchar date){
+  30   1              ledrs=1;
+  31   1              //ledrw=0;
+  32   1              P0=date;
+  33   1              delay(5);
+  34   1              leden=1;
+  35   1              delay(5);
+  36   1              leden=0;
+  37   1      }
+  38          //show a random number
+  39          void init(){
+  40   1              dula=0;
+  41   1              wela=0;
+  42   1              leden=0;
+  43   1              ledrw=0;
+  44   1              write_com(0x38);
+  45   1              write_com(0x0c);
+  46   1              write_com(0x06);
+  47   1              write_com(0x01);
+  48   1      }
+  49          //main
+  50          void main(){
+  51   1              init();
+  52   1              write_com(0x80+0x10);
+  53   1              for(num=0;num<8;num++){
+  54   2                      write_data(table[num]);
+  55   2                      delay(5);
+C51 COMPILER V9.01   1602LEFT                                                              09/29/2016 12:38:41 PAGE 2   
+
+  56   2              }
+  57   1              //change address
+  58   1              write_com(0x80+0x50);
+  59   1              for(num=0;num<8;num++){
+  60   2                      write_data(table1[num]);
+  61   2                      delay(5);
+  62   2              }
+  63   1              for(num=0;num<8;num++){
+  64   2                      write_com(0x18);
+  65   2                      delay(2000);
+  66   2              }
+  67   1              while(1);
+  68   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    178    ----
+   CONSTANT SIZE    =     23    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

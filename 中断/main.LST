@@ -1,0 +1,52 @@
+C51 COMPILER V8.08   MAIN                                                                  09/23/2016 17:41:10 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int;
+   3          #define uchar unsigned char;
+   4          sbit led1=P1^0;
+   5          uchar num;
+   6          void main(){
+   7   1         //选择定时器0，工作方式为方式1，TMOD送00000001H
+   8   1         TMOD=0x01;
+   9   1         //设置TL0，TH0
+  10   1         //晶振频率为11.0592MHz时，定时50ms送数字45872
+  11   1         TH0=(65536-45872)/256;
+  12   1         TL0=(65536-45872)%256;
+  13   1         EA=1;//开总中断
+  14   1         ET0=1;//开定时器0中断
+  15   1         TR0=1;//启动计时器0
+  16   1         while(1){//程序进行到这里时候等待中断
+  17   2                 if(num==20){
+  18   3                    num=0;
+  19   3               //取反，led1灭
+  20   3                         led1=~led1;
+  21   3                 }   
+  22   2         }
+  23   1      }
+  24          void T0_time() interrupt 1{
+  25   1         //重装初值
+  26   1         TH0=(65536-45872)/256;
+  27   1         TL0=(65536-45872)%256;
+  28   1         num++;   
+  29   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     50    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

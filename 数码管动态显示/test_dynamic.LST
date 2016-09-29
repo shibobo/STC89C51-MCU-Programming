@@ -1,0 +1,205 @@
+C51 COMPILER V8.08   TEST_DYNAMIC                                                          09/20/2016 20:24:23 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE TEST_DYNAMIC
+OBJECT MODULE PLACED IN test_dynamic.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE test_dynamic.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          sbit wela=P2^7; //位选
+   5          sbit dula=P2^6; //段选
+   6          //delay fun declaration
+   7          void delayxms(uint xms);
+   8          //要显示的数据
+   9          uchar code table[]={ 
+  10                          0x3F,  //"0"
+  11                          0x06,  //"1"
+  12                          0x5B,  //"2"
+  13                          0x4F,  //"3"
+  14                          0x66,  //"4"
+  15                          0x6D,  //"5"
+  16                          0x7D,  //"6"
+  17                          0x07,  //"7"
+  18                          0x7F,  //"8"
+  19                          0x6F,  //"9"
+  20                          0x77,  //"A"
+  21                          0x7C,  //"B"
+  22                          0x39,  //"C"
+  23                          0x5E,  //"D"
+  24                          0x79,  //"E"
+  25                          0x71,  //"F"
+  26                          0x76,  //"H"
+  27                          0x38,  //"L"
+  28                          0x37,  //"n"
+  29                          0x3E,  //"u"
+  30                          0x73,  //"P"
+  31                          0x5C,  //"o"
+  32                          0x40,  //"-"
+  33                          0x00,  //熄灭
+  34                          0x80  //自定义
+  35          };
+  36          //main func
+  37          void main(){
+  38   1        while(1){
+  39   2           //control the two-pole light
+  40   2               P1=0x0e;
+  41   2           //open dula choose
+  42   2           dula=1;
+  43   2               //send data
+  44   2               P0=table[0];
+  45   2               //close dula choose
+  46   2               dula=0;
+  47   2               //clean the "shadow": a very important way to simplify the shadow
+  48   2           P0=0xff;
+  49   2               //open wela choose
+  50   2               wela=1;
+  51   2               //send data
+  52   2               P0=0xfe;
+  53   2               //close wela choose
+  54   2               wela=0;
+  55   2               delayxms(500);
+C51 COMPILER V8.08   TEST_DYNAMIC                                                          09/20/2016 20:24:23 PAGE 2   
+
+  56   2      
+  57   2               //open dula choose
+  58   2           dula=1;
+  59   2               //send data
+  60   2               P0=table[1];
+  61   2               //close dula choose
+  62   2               dula=0;
+  63   2               //clean the "shadow": a very important way to simplify the shadow
+  64   2           P0=0xff;
+  65   2               //open wela choose
+  66   2               wela=1;
+  67   2               //send data
+  68   2               P0=0xfd;
+  69   2               //close wela choose
+  70   2               wela=0;
+  71   2               delayxms(500);
+  72   2      
+  73   2               //open dula choose
+  74   2           dula=1;
+  75   2               //send data
+  76   2               P0=table[2];
+  77   2               //close dula choose
+  78   2               dula=0;
+  79   2               //clean the "shadow": a very important way to simplify the shadow
+  80   2           P0=0xff;
+  81   2               //open wela choose
+  82   2               wela=1;
+  83   2               //send data
+  84   2               P0=0xfb;
+  85   2               //close wela choose
+  86   2               wela=0;
+  87   2               delayxms(500);
+  88   2      
+  89   2      
+  90   2               //open dula choose
+  91   2           dula=1;
+  92   2               //send data
+  93   2               P0=table[3];
+  94   2               //close dula choose
+  95   2               dula=0;
+  96   2               //clean the "shadow": a very important way to simplify the shadow
+  97   2           P0=0xff;
+  98   2               //open wela choose
+  99   2               wela=1;
+ 100   2               //send data
+ 101   2               P0=0xf7;
+ 102   2               //close wela choose
+ 103   2               wela=0;
+ 104   2               delayxms(500);
+ 105   2               
+ 106   2               //open dula choose
+ 107   2           dula=1;
+ 108   2               //send data
+ 109   2               P0=table[4];
+ 110   2               //close dula choose
+ 111   2               dula=0;
+ 112   2               //clean the "shadow": a very important way to simplify the shadow
+ 113   2           P0=0xff;
+ 114   2               //open wela choose
+ 115   2               wela=1;
+ 116   2               //send data
+ 117   2               P0=0xef;
+C51 COMPILER V8.08   TEST_DYNAMIC                                                          09/20/2016 20:24:23 PAGE 3   
+
+ 118   2               //close wela choose
+ 119   2               wela=0;
+ 120   2               delayxms(500);
+ 121   2               
+ 122   2               //open dula choose
+ 123   2           dula=1;
+ 124   2               //send data
+ 125   2               P0=table[5];
+ 126   2               //close dula choose
+ 127   2               dula=0;
+ 128   2               //clean the "shadow": a very important way to simplify the shadow
+ 129   2           P0=0xff;
+ 130   2               //open wela choose
+ 131   2               wela=1;
+ 132   2               //send data
+ 133   2               P0=0xdf;
+ 134   2               //close wela choose
+ 135   2               wela=0;
+ 136   2               delayxms(500);
+ 137   2               
+ 138   2               //open dula choose
+ 139   2           dula=1;
+ 140   2               //send data
+ 141   2               P0=table[6];
+ 142   2               //close dula choose
+ 143   2               dula=0;
+ 144   2               //clean the "shadow": a very important way to simplify the shadow
+ 145   2           P0=0xff;
+ 146   2               //open wela choose
+ 147   2               wela=1;
+ 148   2               //send data
+ 149   2               P0=0xbf;
+ 150   2               //close wela choose
+ 151   2               wela=0;
+ 152   2               delayxms(500);
+ 153   2              
+ 154   2               //open dula choose
+ 155   2           dula=1;
+ 156   2               //send data
+ 157   2               P0=table[7];
+ 158   2               //close dula choose
+ 159   2               dula=0;
+ 160   2               //clean the "shadow": a very important way to simplify the shadow
+ 161   2           P0=0xff;
+ 162   2               //open wela choose
+ 163   2               wela=1;
+ 164   2               //send data
+ 165   2               P0=0x7f;
+ 166   2               //close wela choose
+ 167   2               wela=0;
+ 168   2               delayxms(500);                   
+ 169   2        }
+ 170   1      }
+ 171          //delay func
+ 172          void delayxms(uint xms){
+ 173   1         uint i,j;
+ 174   1         for(i=xms;i>0;i--)
+ 175   1           for(j=110;j>0;j--);
+ 176   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V8.08   TEST_DYNAMIC                                                          09/20/2016 20:24:23 PAGE 4   
+
+   CODE SIZE        =    218    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

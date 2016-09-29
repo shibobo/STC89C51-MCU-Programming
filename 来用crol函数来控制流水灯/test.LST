@@ -1,0 +1,38 @@
+C51 COMPILER V8.08   TEST                                                                  09/20/2016 18:53:08 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN test.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE test.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          //#include <intrins.h>
+   3          #define uint unsigned int
+   4          #define uchar unsigned char;
+   5          //a用来给P1口赋值
+   6          uchar a;
+   7          //声明延时函数
+   8          void delayms(void);
+   9          //实现延时函数
+  10          void delayms(void){
+  11   1          uint i,j;
+  12   1          for(i=100;i>0;i--)
+  13   1                 for(j=100;j>0;j--);
+  14   1      }
+  15          //主函数
+  16          void main(void){
+  17   1          a=0xfe;
+  18   1              while(1){
+  19   2                P1=a;
+  20   2                delayms();
+  21   2                //循环左移一位
+  22   2                a=_crol_(a,1);
+*** WARNING C206 IN LINE 22 OF TEST.C: '_crol_': missing function-prototype
+*** ERROR C267 IN LINE 22 OF TEST.C: '_crol_': requires ANSI-style prototype
+  23   2                //a=a<<1;
+  24   2              }
+  25   1      }
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  1 ERROR(S)

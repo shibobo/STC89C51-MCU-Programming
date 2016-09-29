@@ -1,0 +1,86 @@
+C51 COMPILER V8.08   SHUMA                                                                 09/20/2016 18:59:38 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE SHUMA
+OBJECT MODULE PLACED IN shuma.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE shuma.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uchar unsigned char
+   3          #define uint unsigned int
+   4          sbit wei=P2^7;//位选
+   5          sbit duan=P2^6; //段选
+   6          
+   7          /**
+   8          * this is a c file created by the administor named shibobo
+   9          * ha ha ha ha ha !!!
+  10          */
+  11          uchar code leddata[]={ 
+  12                          0x3F,  //"0"
+  13                          0x06,  //"1"
+  14                          0x5B,  //"2"
+  15                          0x4F,  //"3"
+  16                          0x66,  //"4"
+  17                          0x6D,  //"5"
+  18                          0x7D,  //"6"
+  19                          0x07,  //"7"
+  20                          0x7F,  //"8"
+  21                          0x6F,  //"9"
+  22                          0x77,  //"A"
+  23                          0x7C,  //"B"
+  24                          0x39,  //"C"
+  25                          0x5E,  //"D"
+  26                          0x79,  //"E"
+  27                          0x71,  //"F"
+  28                          0x76,  //"H"
+  29                          0x38,  //"L"
+  30                          0x37,  //"n"
+  31                          0x3E,  //"u"
+  32                          0x73,  //"P"
+  33                          0x5C,  //"o"
+  34                          0x40,  //"-"
+  35                          0x00,  //熄灭
+  36                          0x80  //自定义
+  37          };
+  38          //定义延时子程序
+  39          void delay(uint z);
+  40          
+  41          void main()
+  42          {
+  43   1              duan=1;  //打开段选
+  44   1              P0=0x5B;
+  45   1              duan=0;  //关闭段选
+  46   1              
+  47   1              //delay(5);
+  48   1      
+  49   1      
+  50   1              wei=1;  //打开位选
+  51   1              P0=0x77;
+  52   1              wei=0;  //关闭位选
+  53   1              while(1);
+  54   1      }
+  55          //实现延时子程序
+C51 COMPILER V8.08   SHUMA                                                                 09/20/2016 18:59:38 PAGE 2   
+
+  56          void delay(uint z)
+  57          {
+  58   1        uint x,y;
+  59   1        for(x=z;x>0;x--)
+  60   1           for(y=100;y>0;y--);
+  61   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     46    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

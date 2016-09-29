@@ -1,0 +1,56 @@
+C51 COMPILER V9.01   MAIN                                                                  09/29/2016 10:13:38 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <stdio.h>
+   3          //do not use define,use typedef
+   4          //#define uint unsigned int
+   5          //#define uchar unsigned char
+   6          typedef unsigned int INT16U;
+   7          typedef unsigned char INT8U;
+   8          void Delay_Ms(INT16U z){
+   9   1              INT16U x,y;
+  10   1              for(x=z;x>0;x--){
+  11   2                      for(y=114;y>0;y--);
+  12   2              }
+  13   1      }
+  14          void UART_Init(){
+  15   1              TMOD=0X20;
+  16   1              TH1=0xfd;
+  17   1              TL1=0xfd;  //9600bps
+  18   1              TR1=1;     //start timer1
+  19   1              SM0=0;
+  20   1              SM1=1;     //work on mode 1
+  21   1      }
+  22          //main
+  23          void main(){
+  24   1              UART_Init();
+  25   1              while(1){
+  26   2                      TI=1;
+  27   2                      puts("你好，欢迎来到单片机世界\n");
+  28   2                      while(!TI);
+  29   2                      TI=0;
+  30   2                      Delay_Ms(1000);
+  31   2              }
+  32   1        
+  33   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     74    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

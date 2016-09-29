@@ -1,0 +1,70 @@
+C51 COMPILER V9.01   MAIN                                                                  09/29/2016 10:19:23 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          //#include <intrins.h>
+   3          #define uint unsigned int
+   4          #define uchar unsigned char
+   5          uchar flag,a,i;
+   6          uchar code table[]="Iloveyou";
+   7          //main
+   8          void init(){
+   9   1              TMOD=0x20;//
+  10   1              TH1=0xfd;//¼
+  11   1              TL1=0xfd;//¼
+  12   1              TR1=1;//¨
+  13   1      
+  14   1              
+  15   1              SM0=0;//
+  16   1              SM1=1;
+  17   1              REN=1;//
+  18   1              EA=1;//­
+  19   1              ES=1;//
+  20   1      }
+  21          void main(){
+  22   1              init();
+  23   1              while(1){
+  24   2                      if (flag==1)
+  25   2                      {
+  26   3                              ES=0;
+  27   3                              for (i = 0; i < 6; i++)
+  28   3                              {
+  29   4                                      SBUF=table[i];
+  30   4                                      while(!TI);
+  31   4                                      TI=0;
+  32   4                              }
+  33   3                              SBUF=a;
+  34   3                              while(!TI);
+  35   3                              TI=0;
+  36   3                              ES=1;
+  37   3                              flag=0;
+  38   3                      }
+  39   2              }
+  40   1      }
+  41          void ser() interrupt 4{
+  42   1              RI=0;
+  43   1              a=SBUF;
+  44   1              flag=1;
+  45   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     79    ----
+   CONSTANT SIZE    =      9    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.01   MAIN                                                                  09/29/2016 10:19:23 PAGE 2   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

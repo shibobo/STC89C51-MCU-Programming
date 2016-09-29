@@ -1,0 +1,101 @@
+C51 COMPILER V8.08   TEST                                                                  09/20/2016 20:07:38 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN test.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE test.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          sbit dula=P2^6;
+   5          sbit wela=P2^7;
+   6          uint index=0;
+   7          uint num=25;
+   8          //要显示的数据
+   9          uchar code table[]={ 
+  10                          0x3F,  //"0"
+  11                          0x06,  //"1"
+  12                          0x5B,  //"2"
+  13                          0x4F,  //"3"
+  14                          0x66,  //"4"
+  15                          0x6D,  //"5"
+  16                          0x7D,  //"6"
+  17                          0x07,  //"7"
+  18                          0x7F,  //"8"
+  19                          0x6F,  //"9"
+  20                          0x77,  //"A"
+  21                          0x7C,  //"B"
+  22                          0x39,  //"C"
+  23                          0x5E,  //"D"
+  24                          0x79,  //"E"
+  25                          0x71,  //"F"
+  26                          0x76,  //"H"
+  27                          0x38,  //"L"
+  28                          0x37,  //"n"
+  29                          0x3E,  //"u"
+  30                          0x73,  //"P"
+  31                          0x5C,  //"o"
+  32                          0x40,  //"-"
+  33                          0x00,  //熄灭
+  34                          0x80  //自定义
+  35          };
+  36          void delay();
+  37          void main(){
+  38   1          //回顾上节课的东西，点亮后四个二极管
+  39   1              P1=0xf0;
+  40   1              /**
+  41   1              //位选
+  42   1              wela=1;
+  43   1              P0=0x00;
+  44   1              wela=0;
+  45   1              //段选
+  46   1              dula=1;
+  47   1              P0=0xff;
+  48   1              dula=0;
+  49   1              while(1); */
+  50   1              //打开位选
+  51   1              wela=1;
+  52   1              //送数据（全部选中）
+  53   1              P0=0x00;
+  54   1              //关闭位选
+  55   1              wela=0;
+C51 COMPILER V8.08   TEST                                                                  09/20/2016 20:07:38 PAGE 2   
+
+  56   1      
+  57   1              //打开段选
+  58   1              //dula=1;
+  59   1              //循环送数据
+  60   1              while(1){
+  61   2                      for(index=0;index<=num;index++){
+  62   3                          dula=1;
+  63   3                              P0=table[index];
+  64   3                              delay();
+  65   3                              dula=0;
+  66   3                      }          
+  67   2              }
+  68   1              //P0=table[1];
+  69   1              //关闭段选
+  70   1              //dula=0;
+  71   1      }
+  72          void delay(){
+  73   1         uint i,j;
+  74   1         for(i=200;i>0;i--)
+  75   1           for(j=200;j>0;j--);
+  76   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     78    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

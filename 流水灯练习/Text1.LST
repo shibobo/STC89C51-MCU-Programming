@@ -1,0 +1,83 @@
+C51 COMPILER V8.08   TEXT1                                                                 09/20/2016 17:25:46 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE TEXT1
+OBJECT MODULE PLACED IN Text1.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE Text1.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #define uint unsigned int          //52系列单片机头文件
+   4          sbit led1=P1^0;            //声明单片机p1口第一个
+   5          sbit led2=P1^1;
+   6          void delay(uint time1,uint time2);
+   7          /** 任意点亮
+   8          void main(){
+   9             //led1=0;                   //点亮第一个放光二极管
+  10             //led2=0;
+  11             //P1=0x00;                                   //点亮所有的二极管
+  12             //P1=0xaa;                                           //1,3,5,7亮
+  13             P1=0x55;                                     //2,4,6,8亮
+  14          }*/
+  15          /**
+  16          void main(void){
+  17             P1=0xFE;
+  18             while(1);
+  19          }*/
+  20          /**void main(void){
+  21            unsigned char i,j;
+  22            for(i=255;i>0;i--)
+  23              for(j=255;j>0;j--)
+  24            P1=0xfe;
+  25          }*/
+  26          
+  27          /**void main(void){
+  28              //大循环
+  29                  while(1){
+  30                      led1=0;
+  31                          led2=1;
+  32                          //延时
+  33                          delay(100,100);
+  34                          led1=1;
+  35                          led2=0;
+  36                          //延时
+  37                          delay(100,100);
+  38                  };
+  39          }*/
+  40          void delay(uint time1,uint time2){
+  41   1          uint i,j;
+  42   1          for(i=time1;i>0;i--)
+  43   1                  for(j=time2;j>0;j--);
+  44   1      }
+  45          //左移测试a<<1;右移测试a>>1
+  46          unsigned char a;
+  47          void main(void){
+  48   1          a=0xFF;
+  49   1              while(1){
+  50   2              a=a>>1;
+  51   2                      P1=a;
+  52   2                      delay(200,200);
+  53   2                      if(a==0x00){
+  54   3                          a=0xFF;
+  55   3                              delay(200,200);
+C51 COMPILER V8.08   TEXT1                                                                 09/20/2016 17:25:46 PAGE 2   
+
+  56   3                      }
+  57   2              }
+  58   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     74    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

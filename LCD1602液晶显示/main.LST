@@ -1,0 +1,100 @@
+C51 COMPILER V9.01   MAIN                                                                  09/29/2016 20:00:59 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          typedef unsigned int uint;
+   3          typedef unsigned char uchar;
+   4          
+   5          sbit RS=P3^5;
+   6          sbit RW=P3^6;
+   7          sbit EN=P3^4;
+   8          //whether lcd is busy,busy wait
+   9          void Read_Busy(){
+  10   1              uchar busy;
+  11   1              P0=0xff;
+  12   1              RS=0;
+  13   1              RW=1;
+  14   1              do{
+  15   2                      EN=1;
+  16   2                      busy=P0;
+  17   2                      EN=0;
+  18   2              }while(busy & 0x80);
+  19   1      }
+  20          //write command
+  21          void Write_Cmd(uchar cmd){
+  22   1              //busy or not
+  23   1              Read_Busy();
+  24   1              RS=0;
+  25   1              RW=0;
+  26   1              P0=cmd;
+  27   1              EN=1;
+  28   1              EN=0;
+  29   1      }
+  30          //write a byte
+  31          void Write_Data(uchar dat){
+  32   1              Read_Busy();
+  33   1              RS=1;
+  34   1              RW=0;
+  35   1              P0=dat;
+  36   1              EN=1;
+  37   1              EN=0;
+  38   1      }
+  39          //write a string
+  40          void max(uchar a,uchar b,uchar *max){
+  41   1              *max=(a>b)?a:b;
+  42   1      }
+  43          //main
+  44          void main(){
+  45   1              //settings
+  46   1              uchar a;
+  47   1              uchar *pa;
+  48   1              uchar **ppa;
+  49   1              Write_Cmd(0x38);
+  50   1              Write_Cmd(0x0f);
+  51   1      
+  52   1              //Write_Cmd(0x80);
+  53   1              Write_Cmd(0x01);
+  54   1              Write_Cmd(0x05);
+  55   1              //
+C51 COMPILER V9.01   MAIN                                                                  09/29/2016 20:00:59 PAGE 2   
+
+  56   1              Write_Cmd(0x84);
+  57   1              //Write_Data(1+'0');
+  58   1              //Write_Data(2+'0');
+  59   1              //Write_Data(3+'0');
+  60   1      
+  61   1              Write_Cmd(0xc4);
+  62   1              //pa=&a;
+  63   1              //*pa=8;//a=8
+  64   1              //max(3,6,&a);
+  65   1              pa=&a;
+  66   1              ppa=&pa;
+  67   1              a=5;
+  68   1              Write_Data(a+'0');
+  69   1              Write_Data(*pa+'0');
+  70   1              Write_Data(**ppa+'0');
+  71   1              //Write_Data('b');
+  72   1              //Write_Data('c');
+  73   1      
+  74   1              while(1);
+  75   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    151    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

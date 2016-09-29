@@ -1,0 +1,203 @@
+BL51 BANKED LINKER/LOCATER V6.05                                                        09/20/2016  20:24:24  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, test_dynamic.obj TO test RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  test_dynamic.obj (TEST_DYNAMIC)
+
+
+LINK MAP OF MODULE:  test (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     00B6H     UNIT         ?PR?MAIN?TEST_DYNAMIC
+            CODE    00B9H     0024H     UNIT         ?PR?_DELAYXMS?TEST_DYNAMIC
+            CODE    00DDH     0019H     UNIT         ?CO?TEST_DYNAMIC
+            CODE    00F6H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   test (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?TEST_DYNAMIC
+
+?PR?MAIN?TEST_DYNAMIC
+  +--> ?CO?TEST_DYNAMIC
+  +--> ?PR?_DELAYXMS?TEST_DYNAMIC
+
+
+
+SYMBOL TABLE OF MODULE:  test (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:00F6H         SEGMENT       ?C_C51STARTUP
+  I:0008H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+BL51 BANKED LINKER/LOCATER V6.05                                                      09/20/2016  20:24:24  PAGE 2
+
+
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:00F9H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:00F6H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:00F6H         LINE#         133
+  C:00F8H         LINE#         134
+  C:00F9H         LINE#         135
+  C:00FAH         LINE#         136
+  C:00FCH         LINE#         185
+  C:00FFH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        TEST_DYNAMIC
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:00DDH         PUBLIC        table
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0003H         PUBLIC        main
+  B:00A0H.6       PUBLIC        dula
+  B:00A0H.7       PUBLIC        wela
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:00C8H         PUBLIC        T2CON
+  C:00BFH         PUBLIC        _delayxms
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:0003H         LINE#         37
+  C:0003H         LINE#         38
+  C:0003H         LINE#         40
+  C:0006H         LINE#         42
+  C:0008H         LINE#         44
+  C:000FH         LINE#         46
+  C:0011H         LINE#         48
+  C:0014H         LINE#         50
+  C:0016H         LINE#         52
+  C:0019H         LINE#         54
+  C:0019H         LINE#         55
+  C:001CH         LINE#         58
+BL51 BANKED LINKER/LOCATER V6.05                                                      09/20/2016  20:24:24  PAGE 3
+
+
+  C:001EH         LINE#         60
+  C:0025H         LINE#         62
+  C:0027H         LINE#         64
+  C:002AH         LINE#         66
+  C:002CH         LINE#         68
+  C:002FH         LINE#         70
+  C:002FH         LINE#         71
+  C:0032H         LINE#         74
+  C:0034H         LINE#         76
+  C:003BH         LINE#         78
+  C:003DH         LINE#         80
+  C:0040H         LINE#         82
+  C:0042H         LINE#         84
+  C:0045H         LINE#         86
+  C:0045H         LINE#         87
+  C:0048H         LINE#         91
+  C:004AH         LINE#         93
+  C:0051H         LINE#         95
+  C:0053H         LINE#         97
+  C:0056H         LINE#         99
+  C:0058H         LINE#         101
+  C:005BH         LINE#         103
+  C:005BH         LINE#         104
+  C:005EH         LINE#         107
+  C:0060H         LINE#         109
+  C:0067H         LINE#         111
+  C:0069H         LINE#         113
+  C:006CH         LINE#         115
+  C:006EH         LINE#         117
+  C:0071H         LINE#         119
+  C:0071H         LINE#         120
+  C:0074H         LINE#         123
+  C:0076H         LINE#         125
+  C:007DH         LINE#         127
+  C:007FH         LINE#         129
+  C:0082H         LINE#         131
+  C:0084H         LINE#         133
+  C:0087H         LINE#         135
+  C:0087H         LINE#         136
+  C:008AH         LINE#         139
+  C:008CH         LINE#         141
+  C:0093H         LINE#         143
+  C:0095H         LINE#         145
+  C:0098H         LINE#         147
+  C:009AH         LINE#         149
+  C:009DH         LINE#         151
+  C:009DH         LINE#         152
+  C:00A0H         LINE#         155
+  C:00A2H         LINE#         157
+  C:00A9H         LINE#         159
+  C:00ABH         LINE#         161
+  C:00AEH         LINE#         163
+  C:00B0H         LINE#         165
+  C:00B3H         LINE#         167
+  C:00B3H         LINE#         168
+  C:00B6H         LINE#         169
+  -------         ENDPROC       MAIN
+BL51 BANKED LINKER/LOCATER V6.05                                                      09/20/2016  20:24:24  PAGE 4
+
+
+  C:00B9H         SYMBOL        L?0014
+  -------         PROC          L?0013
+  -------         ENDPROC       L?0013
+  C:00B9H         SYMBOL        L?0014
+  -------         PROC          _DELAYXMS
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0006H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:00BFH         LINE#         172
+  C:00BFH         LINE#         174
+  C:00C8H         LINE#         175
+  C:00DCH         LINE#         176
+  -------         ENDPROC       _DELAYXMS
+  -------         ENDMOD        TEST_DYNAMIC
+
+Program Size: data=9.0 xdata=0 code=258
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

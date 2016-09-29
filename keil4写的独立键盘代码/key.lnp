@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"key.obj" 
+TO "key" 
+RAMSIZE(256) 

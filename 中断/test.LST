@@ -1,0 +1,151 @@
+C51 COMPILER V8.08   TEST                                                                  09/24/2016 13:04:32 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN test.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE test.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          sbit dule=P2^6;
+   5          sbit wela=P2^7;
+   6          sbit led1=P1^0;
+   7          uchar code table[]={
+   8                  0x3f,
+   9                  0x06,
+  10                  0x5b,
+  11                  0x4f,
+  12                  0x66,
+  13                  0x6d,
+  14                  0x7d,
+  15                  0x07,
+  16                  0x7f,
+  17                  0x6f,
+  18                  0x77,
+  19                  0x7c,
+  20                  0x39,
+  21                  0x5e,
+  22                  0x79,
+  23                  0x71
+  24          };
+  25          void delayms(uint);
+  26          void display(uchar,uchar,uchar);
+  27          uchar num,num1,num2,bai,shi,ge;
+  28          //main
+  29          void main(){
+  30   1              TMOD=0x01;
+  31   1              //
+  32   1              TH0=(65536-45872)/256;
+  33   1              TL0=(65536-45872)%256;
+  34   1              //
+  35   1              TH1=(65536-45872)/256;
+  36   1              TL1=(65536-45872)%256;
+  37   1              //
+  38   1              EA=1;
+  39   1              //
+  40   1              ET0=1;
+  41   1              //
+  42   1              ET1=1;
+  43   1              //
+  44   1              TR0=1;
+  45   1              //      
+  46   1              TR1=1;
+  47   1              while(1){
+  48   2                 display(bai,shi,ge);
+  49   2              }
+  50   1                      
+  51   1      
+  52   1        
+  53   1      }
+  54          //void display(uchar shi,uchar ge){
+  55          void display(uchar bai,uchar shi,uchar ge){
+C51 COMPILER V8.08   TEST                                                                  09/24/2016 13:04:32 PAGE 2   
+
+  56   1              //
+  57   1              dule=1;
+  58   1              P0=table[bai];
+  59   1              dule=0;
+  60   1              //
+  61   1              P0=0xff;
+  62   1              wela=1;
+  63   1              P0=0xfe;
+  64   1              wela=0;
+  65   1              delayms(5);//
+  66   1      
+  67   1              dule=1;
+  68   1              P0=table[shi];
+  69   1              dule=0;
+  70   1              P0=0xff;
+  71   1              wela=1;
+  72   1              P0=0xfd;
+  73   1              wela=0;
+  74   1              delayms(5);
+  75   1      
+  76   1              dule=1;
+  77   1              P0=table[ge];
+  78   1              dule=0;
+  79   1              P0=0xff;
+  80   1              wela=1;
+  81   1              P0=0xfb;
+  82   1              wela=0;
+  83   1              delayms(5);
+  84   1      }
+  85          void delayms(uint xms){
+  86   1              uint i,j;
+  87   1              for (i=xms;i>0;i--)
+  88   1              {
+  89   2                      for (j=110;j>0;j--)
+  90   2                      {
+  91   3                              //nothing to do
+  92   3                      }
+  93   2              }
+  94   1      
+  95   1      }
+  96          void T0_time() interrupt 1{
+  97   1          TH0=(65536-45872)/256;
+  98   1              TL0=(65536-45872)%256;
+  99   1              num1++;
+ 100   1              if (num1==4)
+ 101   1              {
+ 102   2                      num1=0;
+ 103   2                      led1=~led1;
+ 104   2              }
+ 105   1      }
+ 106          void T1_time() interrupt 3{
+ 107   1              TH1=(65536-45872)/256;
+ 108   1              TL1=(65536-45872)%256;
+ 109   1              num2++;
+ 110   1              if (num2==20)
+ 111   1              {
+ 112   2                      num2=0;
+ 113   2                      num++;
+ 114   2                      if (num==999)
+ 115   2                      {
+ 116   3                              num=0;
+ 117   3                      }
+C51 COMPILER V8.08   TEST                                                                  09/24/2016 13:04:32 PAGE 3   
+
+ 118   2                      bai=num/100;
+ 119   2                      //shi=num/10%10;
+ 120   2                      //another way to get shi
+ 121   2                      shi=num%100/10;
+ 122   2                      ge=num%10;
+ 123   2              }
+ 124   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    261    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

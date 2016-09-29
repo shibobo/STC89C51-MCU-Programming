@@ -1,0 +1,42 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+D:\BaiduYunDownload\单片机板子\单片机编程项目\数码管静态显示\shuma.uv2
+Project File Date:  06/09/2016
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling shuma.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY?SHUMA
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?SHUMA
+Program Size: data=9.0 xdata=0 code=86
+creating hex file from "shuma"...
+"shuma" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling shuma.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY?SHUMA
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?SHUMA
+Program Size: data=9.0 xdata=0 code=86
+creating hex file from "shuma"...
+"shuma" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling shuma.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY?SHUMA
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?SHUMA
+Program Size: data=9.0 xdata=0 code=86
+creating hex file from "shuma"...
+"shuma" - 0 Error(s), 2 Warning(s).
+</pre>
+</body>
+</html>
