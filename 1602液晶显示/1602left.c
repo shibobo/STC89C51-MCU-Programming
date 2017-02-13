@@ -20,6 +20,7 @@ void delay(uint z){
 void write_com(uchar com){
 	ledrs=0;
 	//ledrw=0;
+	P2=com;
 	P0=com;
 	delay(5);
 	leden=1;
@@ -29,6 +30,7 @@ void write_com(uchar com){
 void write_data(uchar date){
 	ledrs=1;
 	//ledrw=0;
+	P2=date;
 	P0=date;
 	delay(5);
 	leden=1;
@@ -37,10 +39,11 @@ void write_data(uchar date){
 }
 //show a random number
 void init(){
-	dula=0;
-	wela=0;
+	//dula=0;
+	//wela=0;
 	leden=0;
 	ledrw=0;
+	P2=0x00;
 	write_com(0x38);
 	write_com(0x0c);
 	write_com(0x06);

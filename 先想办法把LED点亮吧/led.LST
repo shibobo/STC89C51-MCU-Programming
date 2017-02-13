@@ -1,9 +1,9 @@
-C51 COMPILER V8.08   LED                                                                   09/19/2016 11:29:28 PAGE 1   
+C51 COMPILER V9.00   LED                                                                   10/15/2016 10:36:18 PAGE 1   
 
 
-C51 COMPILER V8.08, COMPILATION OF MODULE LED
+C51 COMPILER V9.00, COMPILATION OF MODULE LED
 OBJECT MODULE PLACED IN led.OBJ
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE led.c BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE led.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
 
 line level    source
 
@@ -21,80 +21,80 @@ line level    source
   12          {
   13   1        while(1)
   14   1        {
-  15   2                led1=0;
-  16   2                led2=1;
-  17   2                led3=1;
-  18   2                led4=1;
-  19   2                led5=1;
-  20   2                led6=1;
-  21   2                led7=1;
-  22   2                led8=1;
-  23   2                while(a--);
-  24   2                led1=1;
-  25   2                led2=0;
-  26   2                led3=1;
-  27   2                led4=1;
-  28   2                led5=1;
-  29   2                led6=1;
-  30   2                led7=1;
-  31   2                led8=1; 
-  32   2                while(a--);
-  33   2                led1=1;
-  34   2                led2=1;
-  35   2                led3=0;
-  36   2                led4=1;
-  37   2                led5=1;
-  38   2                led6=1;
-  39   2                led7=1;
-  40   2                led8=1;
-  41   2                while(a--);
-  42   2                led1=1;
-  43   2                led2=1;
-  44   2                led3=1;
-  45   2                led4=0;
-  46   2                led5=1;
-  47   2                led6=1;
-  48   2                led7=1;
-  49   2                led8=1;
-  50   2                while(a--);
-  51   2                led1=1;
-  52   2                led2=1;
-  53   2                led3=1;
-  54   2                led4=1;
-  55   2                led5=0;
-C51 COMPILER V8.08   LED                                                                   09/19/2016 11:29:28 PAGE 2   
+  15   2          led1=0;
+  16   2          led2=1;
+  17   2          led3=1;
+  18   2          led4=1;
+  19   2          led5=1;
+  20   2          led6=1;
+  21   2          led7=1;
+  22   2          led8=1;
+  23   2          while(a--);
+  24   2          led1=1;
+  25   2          led2=0;
+  26   2          led3=1;
+  27   2          led4=1;
+  28   2          led5=1;
+  29   2          led6=1;
+  30   2          led7=1;
+  31   2          led8=1; 
+  32   2          while(a--);
+  33   2          led1=1;
+  34   2          led2=1;
+  35   2          led3=0;
+  36   2          led4=1;
+  37   2          led5=1;
+  38   2          led6=1;
+  39   2          led7=1;
+  40   2          led8=1;
+  41   2          while(a--);
+  42   2          led1=1;
+  43   2          led2=1;
+  44   2          led3=1;
+  45   2          led4=0;
+  46   2          led5=1;
+  47   2          led6=1;
+  48   2          led7=1;
+  49   2          led8=1;
+  50   2          while(a--);
+  51   2          led1=1;
+  52   2          led2=1;
+  53   2          led3=1;
+  54   2          led4=1;
+  55   2          led5=0;
+C51 COMPILER V9.00   LED                                                                   10/15/2016 10:36:18 PAGE 2   
 
-  56   2                led6=1;
-  57   2                led7=1;
-  58   2                led8=1;
-  59   2                while(a--);
-  60   2                led1=1;
-  61   2                led2=1;
-  62   2                led3=1;
-  63   2                led4=1;
-  64   2                led5=1;
-  65   2                led6=0;
-  66   2                led7=1;
-  67   2                led8=1;
-  68   2                while(a--);
-  69   2                led1=1;
-  70   2                led2=1;
-  71   2                led3=1;
-  72   2                led4=1;
-  73   2                led5=1;
-  74   2                led6=1;
-  75   2                led7=0;
-  76   2                led8=1;
-  77   2                while(a--);
-  78   2                led1=1;
-  79   2                led2=1;
-  80   2                led3=1;
-  81   2                led4=1;
-  82   2                led5=1;
-  83   2                led6=1;
-  84   2                led7=1;
-  85   2                led8=0;
-  86   2                while(a--);                                      
+  56   2          led6=1;
+  57   2          led7=1;
+  58   2          led8=1;
+  59   2          while(a--);
+  60   2          led1=1;
+  61   2          led2=1;
+  62   2          led3=1;
+  63   2          led4=1;
+  64   2          led5=1;
+  65   2          led6=0;
+  66   2          led7=1;
+  67   2          led8=1;
+  68   2          while(a--);
+  69   2          led1=1;
+  70   2          led2=1;
+  71   2          led3=1;
+  72   2          led4=1;
+  73   2          led5=1;
+  74   2          led6=1;
+  75   2          led7=0;
+  76   2          led8=1;
+  77   2          while(a--);
+  78   2          led1=1;
+  79   2          led2=1;
+  80   2          led3=1;
+  81   2          led4=1;
+  82   2          led5=1;
+  83   2          led6=1;
+  84   2          led7=1;
+  85   2          led8=0;
+  86   2          while(a--);                    
   87   2        }
   88   1      }
 

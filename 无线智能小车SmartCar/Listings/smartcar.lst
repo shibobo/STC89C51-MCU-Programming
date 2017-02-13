@@ -1,0 +1,484 @@
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SMARTCAR
+OBJECT MODULE PLACED IN .\Objects\smartcar.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE smartcar.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\smartcar.lst) TABS(2) OBJECT(.\Objects\smartcar.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF SMARTCAR.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include "myreg52.h"
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          #define uchar unsigned char
+   5          #define uint unsigned int
+   6          #define ulong unsigned long
+   7          /**
+   8          *port define
+   9          */
+  10          //P1^6=ENA,P1^7=ENB
+  11          sbit left_motor_pwm_port=P1^6;
+  12          sbit right_motor_pwm_port=P1^7;
+  13          //left motor
+  14          sbit int1=P1^0;
+  15          sbit int2=P1^1;
+  16          //right motor
+  17          sbit int3=P1^2;
+  18          sbit int4=P1^3;
+  19          //ultrasound
+  20          sbit trig=P2^0;
+  21          sbit echo=P2^1;
+  22          //lcd1602 display
+  23          sbit lcden=P3^4;//EN
+  24          sbit lcdrs=P3^5;//RS
+  25          sbit lcdrw=P3^6;//RW
+  26          /**
+  27          *function lists
+  28          */
+  29          void delayms(uint time);
+  30          void USModule_start();
+  31          void display(uchar dis);
+  32          void calculate_distance();
+  33          void USModule_init();
+  34          void timer0_init();
+  35          void lcd_init();
+  36          void write_com(uchar com);
+  37          void write_data(uchar dat);
+  38          void lcd_show();
+  39          void Motors_Handler();
+  40          void USMOdule_Handler();
+  41          //uart generator
+  42          void ConfigUART(uint baud);
+  43          //motor status
+  44          void left_motor_go();
+  45          void left_motor_back();
+  46          void left_motor_stop();
+  47          
+  48          void right_motor_go(); 
+  49          void right_motor_back();
+  50          void right_motor_stop(); 
+  51          void timer2_start();
+  52          void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1);
+  53          /**
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 2   
+
+  54          *variable lists
+  55          */
+  56          //pwm值预设
+  57          uchar push_left_pwm_value=0;
+  58          uchar push_right_pwm_value=0;
+  59          //左右电机pwm配置
+  60          uchar left_pwm_value=0;
+  61          uchar right_pwm_value=0;
+  62          uchar a,b;
+  63          uint successful;//超声波模块高电平输出成功
+  64          uint US_OK;//可以进行超声波测距
+  65          uint count;//定时器溢出的次数
+  66          uint count1;//定时器1溢出的次数
+  67          uint time;//echo输出的高电平持续的时间
+  68          ulong distance;//超声波模块距离
+  69          uint bai,shi,ge;
+  70          uchar code table[]="0123456789";
+  71          uchar code tips[]="DISTANCE:";
+  72          //电机速度
+  73          uint temp0,bai0,shi0,ge0,aa0,n0;
+  74          uint temp1,bai1,shi1,ge1,aa1,n1;
+  75          sbit outint0=P3^2;//outside interrupt 0
+  76          sbit outint1=P3^3;//outside interrupt 1
+  77          sbit leden=P3^4;//1602 EN
+  78          sbit ledrs=P3^5;//1602 RS
+  79          sbit ledrw=P3^6;//1602 RW
+  80          
+  81          //delayms
+  82          void delayms(uint time){
+  83   1        uint x,y;
+  84   1        for(x=time;x>0;x--)
+  85   1           for(y=114;y>0;y--);
+  86   1      }
+  87          //启动超声波模块
+  88          void USModule_start(){
+  89   1        trig=1;
+  90   1        //delay_20us();//延时20us
+  91   1           _nop_(); 
+  92   1          _nop_(); 
+  93   1          _nop_(); 
+  94   1          _nop_(); 
+  95   1          _nop_(); 
+  96   1          _nop_(); 
+  97   1          _nop_(); 
+  98   1          _nop_(); 
+  99   1          _nop_(); 
+ 100   1          _nop_(); 
+ 101   1          _nop_(); 
+ 102   1          _nop_(); 
+ 103   1          _nop_(); 
+ 104   1          _nop_(); 
+ 105   1          _nop_(); 
+ 106   1          _nop_(); 
+ 107   1          _nop_();
+ 108   1          _nop_(); 
+ 109   1          _nop_(); 
+ 110   1          _nop_(); 
+ 111   1          _nop_();
+ 112   1          trig=0;
+ 113   1      }
+ 114          //超声波模块初始化
+ 115          void USModule_init(){
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 3   
+
+ 116   1        //trig echo都拉低电平
+ 117   1        trig=0;
+ 118   1        echo=0;
+ 119   1      }
+ 120          //定时器1初始化
+ 121          void timer0_init(){
+ 122   1        TH0=0;
+ 123   1        TL0=0;
+ 124   1        ET0=1;
+ 125   1      }
+ 126          //lcd1602初始化
+ 127          void lcd_init(){
+ 128   1        lcden=0;
+ 129   1        lcdrw=0;
+ 130   1        write_com(0x38);
+ 131   1        write_com(0x0c);
+ 132   1        write_com(0x06);
+ 133   1        write_com(0x01);
+ 134   1        
+ 135   1        write_com(0x80);
+ 136   1        write_data('R');
+ 137   1        write_data(':');
+ 138   1        write_data(table[0]);
+ 139   1        write_data(table[0]);
+ 140   1        write_data(table[0]);
+ 141   1        
+ 142   1        write_com(0x80+0x06);
+ 143   1        write_data('L');
+ 144   1        write_data(':');
+ 145   1        write_data(table[0]);
+ 146   1        write_data(table[0]);
+ 147   1        write_data(table[0]);
+ 148   1        
+ 149   1        write_com(0x80+0x40);
+ 150   1        write_data('D');
+ 151   1        write_data('I');
+ 152   1        write_data('S');
+ 153   1        write_data(':');
+ 154   1        write_data(table[0]);
+ 155   1        write_data(table[0]);
+ 156   1        write_data(' ');
+ 157   1        write_data('c');
+ 158   1        write_data('m');
+ 159   1        write_data(':');
+ 160   1        write_data(')');
+ 161   1      }
+ 162          //1602写命令
+ 163          void write_com(uchar com){
+ 164   1        lcdrs=0;
+ 165   1        //ledrw=0;
+ 166   1        P2=com;
+ 167   1        delayms(5);
+ 168   1        lcden=1;
+ 169   1        delayms(5);
+ 170   1        lcden=0;
+ 171   1      }
+ 172          //1602写数据
+ 173          void write_data(uchar dat){
+ 174   1        lcdrs=1;
+ 175   1        //ledrw=0;
+ 176   1        P2=dat;
+ 177   1        delayms(5);
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 4   
+
+ 178   1        lcden=1;
+ 179   1        delayms(5);
+ 180   1        lcden=0;
+ 181   1      }
+ 182          //根据串口发送的数据控制电机
+ 183          void Motors_Handler(){
+ 184   1        //ConfigUART(9600);
+ 185   1        //while(!RI);
+ 186   1          //RI=0;
+ 187   1      
+ 188   1          b=SBUF;
+ 189   1          //a=b;
+ 190   1          //SBUF=a;
+ 191   1          switch(b){
+ 192   2            //1，Ascii码为31，对应的十进制数为49
+ 193   2            //按下前进发送A,B,C对应低速、中速、高速
+ 194   2            //前进(A)
+ 195   2            case 65:
+ 196   2              //相应的操作
+ 197   2              left_motor_go();
+ 198   2              right_motor_go();
+ 199   2              //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 200   2              break;
+ 201   2            //后退(D)
+ 202   2            case 68:
+ 203   2              left_motor_back();
+ 204   2              right_motor_back();
+ 205   2              //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 206   2              break;      
+ 207   2            //左转(原地左转圈C)
+ 208   2            case 67:
+ 209   2              left_motor_stop();
+ 210   2              right_motor_go();
+ 211   2              //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 212   2              break;    
+ 213   2            //右转(原地右转圈B)
+ 214   2            case 66:    
+ 215   2              left_motor_go();
+ 216   2              right_motor_stop();
+ 217   2              //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 218   2              break;
+ 219   2            //停止('S')
+ 220   2            case 83:
+ 221   2              left_motor_stop();
+ 222   2              right_motor_stop();
+ 223   2              //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 224   2              break;
+ 225   2            //默认
+ 226   2              default:
+ 227   2              left_motor_stop();
+ 228   2              right_motor_stop();
+ 229   2              display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 230   2              break;
+ 231   2          }
+ 232   1          //while(!TI);
+ 233   1          //TI=0;
+ 234   1      }
+ 235          //产生波特率9600
+ 236          void ConfigUART(uint baud){
+ 237   1        SCON=0x50;
+ 238   1        TH1=256-(11059200/12/32)/baud;
+ 239   1        TL1=TH1;
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 5   
+
+ 240   1        TR1=1;//启动定时器1
+ 241   1      }
+ 242          //左轮前进
+ 243          void left_motor_go(){
+ 244   1        int1=1;
+ 245   1        int2=0;
+ 246   1      }
+ 247          //左轮后退
+ 248          void left_motor_back(){
+ 249   1        int1=0;
+ 250   1        int2=1;
+ 251   1      }
+ 252          //左轮停止
+ 253          void left_motor_stop(){
+ 254   1        int1=0;
+ 255   1        int2=0;
+ 256   1      }
+ 257          //右轮前进
+ 258          void right_motor_go(){
+ 259   1        int3=1;
+ 260   1        int4=0;
+ 261   1      }
+ 262          //右轮后退
+ 263          void right_motor_back(){
+ 264   1        int3=0;
+ 265   1        int4=1;
+ 266   1      }
+ 267          //右轮停止
+ 268          void right_motor_stop(){
+ 269   1        int3=0;
+ 270   1        int4=0;
+ 271   1      }
+ 272          //超声波模块处理
+ 273          void USModule_Handler(){
+ 274   1        lcd_show();//lcd初显示
+ 275   1        USModule_start();
+ 276   1        while(!echo);//等待高电平来临，启动计时器
+ 277   1        TR0=1;
+ 278   1        while(echo);//等待高电平结束，关闭计时器
+ 279   1        TR0=0;
+ 280   1        successful=1;//高电平输出完成，成功
+ 281   1        time=TH0*256+TL0;//读出计时器中的值来计算距离
+ 282   1        //重新装入初值，计数
+ 283   1        TH0=0;
+ 284   1        TL0=0;
+ 285   1        distance=(time*1.7)/100;//单位是厘米
+ 286   1        if(distance>700 || successful==0){
+ 287   2          distance=0;//不接收数据
+ 288   2        }
+ 289   1        if(distance<=10){
+ 290   2            //feng=0;
+ 291   2            left_motor_stop();
+ 292   2            right_motor_stop();
+ 293   2            delayms(1000);//遇到障碍时候延迟一秒，然后选择向右转弯
+ 294   2            left_motor_go();
+ 295   2            right_motor_stop();
+ 296   2          }else{
+ 297   2            //feng=1;
+ 298   2          }
+ 299   1          bai=distance/100;
+ 300   1          shi=distance%100/10;
+ 301   1          ge=distance%100%10;
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 6   
+
+ 302   1          write_data(table[bai]);
+ 303   1          write_data(table[shi]);
+ 304   1          write_data(table[ge]);
+ 305   1          write_data(' ');
+ 306   1          write_data('c');
+ 307   1          write_data('m');
+ 308   1          delayms(10);//延时10ms再进行下次测距
+ 309   1          
+ 310   1      }
+ 311          //lcd1602显示转速
+ 312          void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1){
+ 313   1        write_com(0x82);
+ 314   1        write_data(table[bai0]);
+ 315   1        write_data(table[shi0]);
+ 316   1        write_data(table[ge0]);
+ 317   1        write_com(0x80+0x08);
+ 318   1        write_data(table[bai1]);
+ 319   1        write_data(table[shi1]);
+ 320   1        write_data(table[ge1]);
+ 321   1      }
+ 322          void timer2_start(){
+ 323   1        //启动定时器2
+ 324   1        RCAP2H=(65536-1000)/256;//1ms产生一次溢出中断,用来产生pwm波
+ 325   1        RCAP2L=(65536-1000)%256;
+ 326   1        T2CON=0;
+ 327   1        ET2=1;
+ 328   1        TR2=1;
+ 329   1      }
+ 330          void timer0_start(){
+ 331   1        /*temp0=0;
+ 332   1        temp1=0;
+ 333   1        bai0=0;
+ 334   1        shi0=0;
+ 335   1        ge0=0;
+ 336   1        bai1=0;
+ 337   1        shi1=0;
+ 338   1        ge1=0;*/
+ 339   1        //TMOD=0x01;//定时器0工作模式1
+ 340   1        //TCON|=0x0F;
+ 341   1        TH0=(65536-50000)/256;
+ 342   1        TL0=(65536-80000)%256;
+ 343   1        EA=1;
+ 344   1        ET0=1;
+ 345   1        TR0=1;
+ 346   1        EX0=1;
+ 347   1        EX1=1;
+ 348   1      }
+ 349          //主程序
+ 350          void main(){
+ 351   1        TMOD=0x21;//定时器0和1都使用
+ 352   1        //TCON|=0x0F;
+ 353   1        EA=1;
+ 354   1        //EX0=1;
+ 355   1        //EX1=1;
+ 356   1        //timer0_init();
+ 357   1        ConfigUART(9600);
+ 358   1        //lcd_init();
+ 359   1        //timer0_start();
+ 360   1        //successful=0;
+ 361   1        //USModule_init();
+ 362   1        //timer2_start();
+ 363   1        //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 7   
+
+ 364   1        while(1){
+ 365   2          //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 366   2          Motors_Handler();//处理电机模块
+ 367   2          //USModule_Handler();//处理超声波模块
+ 368   2          //display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 369   2          //display1602(1,2,3,4,5,6);
+ 370   2          /*ConfigUART(9600);
+ 371   2          b=SBUF;
+ 372   2          if(b==65){
+ 373   2            left_motor_go();
+ 374   2            right_motor_go();
+ 375   2          }else if(b==68){
+ 376   2            left_motor_back();
+ 377   2            right_motor_back();
+ 378   2          }else if(b==67){
+ 379   2            left_motor_stop();
+ 380   2            right_motor_go();
+ 381   2          }else if(b==66){
+ 382   2            left_motor_go();
+ 383   2            right_motor_stop();
+ 384   2          }*/
+ 385   2        }
+ 386   1      }
+ 387          /*void timer2() interrupt 5{
+ 388            TF2=0;
+ 389            //产生pwm波
+ 390            //left
+ 391            left_pwm_value++;
+ 392            right_pwm_value++;
+ 393            if(left_pwm_value<=push_left_pwm_value){
+ 394              left_motor_pwm_port=1;
+ 395            }else{
+ 396              left_motor_pwm_port=0;
+ 397            }
+ 398            if(left_pwm_value==10){
+ 399              left_pwm_value=0;
+ 400            }
+ 401            //right
+ 402            if(right_pwm_value<=push_right_pwm_value){
+ 403              right_motor_pwm_port=1;
+ 404            }else{
+ 405              right_motor_pwm_port=0;
+ 406            }
+ 407            if(right_pwm_value==10){
+ 408              right_pwm_value=0;
+ 409            }
+ 410          }*/
+ 411          //外部中断0
+ 412          void out0() interrupt 0{
+ 413   1        n0++;//高电平的个数
+ 414   1        while(outint0==0);
+ 415   1      }
+ 416          //外部中断1
+ 417          void out1() interrupt 2{
+ 418   1        n1++;
+ 419   1        while(outint1==0);
+ 420   1      }
+ 421          void timer0() interrupt 1{
+ 422   1        TH0=(65536-50000)/256;
+ 423   1        TL0=(65536-80000)%256;
+ 424   1        aa0++;
+ 425   1        aa1++;
+C51 COMPILER V9.00   SMARTCAR                                                              12/03/2016 15:25:21 PAGE 8   
+
+ 426   1        if(aa0==10){
+ 427   2          aa0=0;
+ 428   2          temp0=5*n0;
+ 429   2          //temp0=50;
+ 430   2          n0=0;
+ 431   2          bai0=temp0/100;
+ 432   2          shi0=temp0%100/10;
+ 433   2          ge0=temp0%10;
+ 434   2        }
+ 435   1        if(aa1==10){
+ 436   2          aa1=0;
+ 437   2          temp1=5*n1;
+ 438   2          //temp1=60;
+ 439   2          n1=0;
+ 440   2          bai1=temp1/100;
+ 441   2          shi1=temp1%100/10;
+ 442   2          ge1=temp1%10;
+ 443   2        }
+ 444   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1056    ----
+   CONSTANT SIZE    =     21    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     50      12
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

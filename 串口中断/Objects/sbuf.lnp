@@ -1,0 +1,3 @@
+".\Objects\msbuf.obj" 
+TO ".\Objects\sbuf" 
+PRINT(".\Listings\sbuf.m51") RAMSIZE(256) 

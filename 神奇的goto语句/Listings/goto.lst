@@ -1,0 +1,51 @@
+C51 COMPILER V9.00   GOTO                                                                  11/04/2016 11:29:23 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE GOTO
+OBJECT MODULE PLACED IN .\Objects\goto.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE goto.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\goto.lst) TABS(2) OBJECT(.\Objects\goto.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF GOTO.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char 
+   4          sbit led0=P1^0;
+   5          sbit led2=P1^2;
+   6          void delayms(uint time){
+   7   1        uint x,y;
+   8   1        for(x=time;x>0;x--)
+   9   1          for(y=120;y>0;y--);
+  10   1      }
+  11          void main(){
+  12   1        uint a=5;
+  13   1        uint b=2;
+  14   1        if(a>b){
+  15   2          a=1;
+  16   2          led0=~led0;
+  17   2          delayms(1000);
+  18   2          //goto A;
+  19   2        }
+  20   1        if(a==1){
+  21   2          led2=~led2;
+  22   2          delayms(1000);
+  23   2        }
+  24   1        while(1);
+  25   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     71    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,417 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        10/27/2016  10:54:42  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\ultrasound.obj TO .\Objects\ultrasound PRINT (.\Listings\ul
+>> trasound.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\ultrasound.obj (ULTRASOUND)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPDIV)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LMUL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ULDIV)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ULCMP)
+
+
+LINK MAP OF MODULE:  .\Objects\ultrasound (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0010H     UNIT         ?DT?ULTRASOUND
+            DATA    0018H     0003H     UNIT         _DATA_GROUP_
+            IDATA   001BH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0008H     UNIT         ?PR?_WRITE_COM?ULTRASOUND
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     03A1H     UNIT         ?C?LIB_CODE
+            CODE    03AFH     00CFH     UNIT         ?PR?_DISPLAY?ULTRASOUND
+            CODE    047EH     007EH     UNIT         ?PR?CALCULATE_DISTANCE?ULTRASOUND
+            CODE    04FCH     0030H     UNIT         ?PR?MAIN?ULTRASOUND
+            CODE    052CH     002DH     UNIT         ?PR?_DELAYMS?ULTRASOUND
+            CODE    0559H     0021H     UNIT         ?CO?ULTRASOUND
+            CODE    057AH     0020H     UNIT         ?PR?LCD_SHOW?ULTRASOUND
+            CODE    059AH     001CH     UNIT         ?PR?LCD_INIT?ULTRASOUND
+            CODE    05B6H     001AH     UNIT         ?PR?STARTMODULE?ULTRASOUND
+            CODE    05D0H     0013H     UNIT         ?PR?TIMER1?ULTRASOUND
+            CODE    05E3H     000DH     UNIT         ?PR?_WRITE_DATA?ULTRASOUND
+            CODE    05F0H     000CH     UNIT         ?C_C51STARTUP
+            CODE    05FCH     000BH     UNIT         ?PR?TIMER1_INIT?ULTRASOUND
+            CODE    0607H     0005H     UNIT         ?PR?ULTRASOUND_MODULE_INIT?ULTRASOUND
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\ultrasound (?C_STARTUP)
+
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/27/2016  10:54:42  PAGE 2
+
+
+SEGMENT                                         DATA_GROUP 
+  +--> CALLED SEGMENT                         START    LENGTH
+-------------------------------------------------------------
+?C_C51STARTUP                                 -----    -----
+  +--> ?PR?MAIN?ULTRASOUND
+
+?PR?MAIN?ULTRASOUND                           -----    -----
+  +--> ?PR?LCD_INIT?ULTRASOUND
+  +--> ?PR?ULTRASOUND_MODULE_INIT?ULTRASOUND
+  +--> ?PR?TIMER1_INIT?ULTRASOUND
+  +--> ?PR?LCD_SHOW?ULTRASOUND
+  +--> ?PR?STARTMODULE?ULTRASOUND
+  +--> ?PR?CALCULATE_DISTANCE?ULTRASOUND
+  +--> ?PR?_DELAYMS?ULTRASOUND
+
+?PR?LCD_INIT?ULTRASOUND                       -----    -----
+  +--> ?PR?_WRITE_COM?ULTRASOUND
+
+?PR?_WRITE_COM?ULTRASOUND                     -----    -----
+  +--> ?PR?_DELAYMS?ULTRASOUND
+
+?PR?LCD_SHOW?ULTRASOUND                       -----    -----
+  +--> ?PR?_WRITE_COM?ULTRASOUND
+  +--> ?CO?ULTRASOUND
+  +--> ?PR?_WRITE_DATA?ULTRASOUND
+  +--> ?PR?_DELAYMS?ULTRASOUND
+
+?PR?_WRITE_DATA?ULTRASOUND                    -----    -----
+  +--> ?CO?ULTRASOUND
+  +--> ?PR?_DELAYMS?ULTRASOUND
+
+?PR?CALCULATE_DISTANCE?ULTRASOUND             -----    -----
+  +--> ?PR?_DISPLAY?ULTRASOUND
+
+?PR?_DISPLAY?ULTRASOUND                       0018H    0003H
+  +--> ?CO?ULTRASOUND
+  +--> ?PR?_WRITE_DATA?ULTRASOUND
+  +--> ?PR?_DELAYMS?ULTRASOUND
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\ultrasound (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:05F0H         SEGMENT       ?C_C51STARTUP
+  I:001BH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/27/2016  10:54:42  PAGE 3
+
+
+  C:05F3H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:05F0H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:05F0H         LINE#         133
+  C:05F2H         LINE#         134
+  C:05F3H         LINE#         135
+  C:05F4H         LINE#         136
+  C:05F6H         LINE#         185
+  C:05F9H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        ULTRASOUND
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  B:00A8H.7       PUBLIC        EA
+  B:00B0H.4       PUBLIC        lcden
+  C:0559H         PUBLIC        table
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  B:00B0H.5       PUBLIC        lcdrs
+  C:05B6H         PUBLIC        startModule
+  B:00B0H.6       PUBLIC        lcdrw
+  B:00A0H.1       PUBLIC        echo
+  B:00A0H.3       PUBLIC        feng
+  C:04FCH         PUBLIC        main
+  B:00A0H.6       PUBLIC        dula
+  C:05E8H         PUBLIC        _write_data
+  B:00A0H.7       PUBLIC        wela
+  D:0008H         PUBLIC        count
+  D:000AH         PUBLIC        bai
+  D:000CH         PUBLIC        time
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  B:00A0H.0       PUBLIC        trig
+  C:0564H         PUBLIC        tips
+  D:000EH         PUBLIC        shi
+  D:0010H         PUBLIC        successful
+  C:059AH         PUBLIC        lcd_init
+  D:0012H         PUBLIC        ge
+  D:008DH         PUBLIC        TH1
+  C:0003H         PUBLIC        _write_com
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/27/2016  10:54:42  PAGE 4
+
+
+  D:0014H         PUBLIC        distance
+  D:008BH         PUBLIC        TL1
+  C:05D0H         PUBLIC        timer1
+  B:0088H.6       PUBLIC        TR1
+  C:057AH         PUBLIC        lcd_show
+  C:0607H         PUBLIC        ultrasound_module_init
+  C:047EH         PUBLIC        calculate_distance
+  D:00C8H         PUBLIC        T2CON
+  C:05FCH         PUBLIC        timer1_init
+  C:053BH         PUBLIC        _delayms
+  C:03AFH         PUBLIC        _display
+  D:00D0H         PUBLIC        PSW
+  C:056EH         PUBLIC        nothing
+  C:0537H         SYMBOL        L?0045
+  -------         PROC          L?0044
+  -------         ENDPROC       L?0044
+  C:0537H         SYMBOL        L?0045
+  -------         PROC          _DELAYMS
+  D:0006H         SYMBOL        time
+  -------         DO            
+  D:0006H         SYMBOL        x
+  D:0004H         SYMBOL        y
+  -------         ENDDO         
+  C:053BH         LINE#         42
+  C:053BH         LINE#         44
+  C:0544H         LINE#         45
+  C:0558H         LINE#         46
+  -------         ENDPROC       _DELAYMS
+  -------         PROC          STARTMODULE
+  C:05B6H         LINE#         47
+  C:05B6H         LINE#         48
+  C:05B8H         LINE#         50
+  C:05B9H         LINE#         51
+  C:05BAH         LINE#         52
+  C:05BBH         LINE#         53
+  C:05BCH         LINE#         54
+  C:05BDH         LINE#         55
+  C:05BEH         LINE#         56
+  C:05BFH         LINE#         57
+  C:05C0H         LINE#         58
+  C:05C1H         LINE#         59
+  C:05C2H         LINE#         60
+  C:05C3H         LINE#         61
+  C:05C4H         LINE#         62
+  C:05C5H         LINE#         63
+  C:05C6H         LINE#         64
+  C:05C7H         LINE#         65
+  C:05C8H         LINE#         66
+  C:05C9H         LINE#         67
+  C:05CAH         LINE#         68
+  C:05CBH         LINE#         69
+  C:05CCH         LINE#         70
+  C:05CDH         LINE#         71
+  C:05CFH         LINE#         72
+  -------         ENDPROC       STARTMODULE
+  -------         PROC          _DISPLAY
+  D:0018H         SYMBOL        dis
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/27/2016  10:54:42  PAGE 5
+
+
+  -------         DO            
+  D:0019H         SYMBOL        num
+  -------         ENDDO         
+  C:03AFH         LINE#         107
+  C:03B1H         LINE#         108
+  C:03B5H         LINE#         110
+  C:03B9H         LINE#         111
+  C:03C3H         LINE#         112
+  C:03C6H         LINE#         113
+  C:03D8H         LINE#         114
+  C:03E1H         LINE#         115
+  C:03F4H         LINE#         116
+  C:03F6H         LINE#         117
+  C:03F8H         LINE#         118
+  C:03FAH         LINE#         119
+  C:03FAH         LINE#         120
+  C:040FH         LINE#         121
+  C:0435H         LINE#         122
+  C:045FH         LINE#         123
+  C:0464H         LINE#         124
+  C:0469H         LINE#         125
+  C:046EH         LINE#         126
+  C:0473H         LINE#         127
+  C:0478H         LINE#         128
+  C:047DH         LINE#         129
+  C:047DH         LINE#         131
+  -------         ENDPROC       _DISPLAY
+  -------         PROC          CALCULATE_DISTANCE
+  C:047EH         LINE#         132
+  C:047EH         LINE#         133
+  C:048EH         LINE#         134
+  C:04A6H         LINE#         136
+  C:04A9H         LINE#         137
+  C:04ABH         LINE#         138
+  C:04D2H         LINE#         139
+  C:04ECH         LINE#         140
+  C:04F5H         LINE#         141
+  C:04F6H         LINE#         142
+  C:04FBH         LINE#         143
+  C:04FBH         LINE#         144
+  -------         ENDPROC       CALCULATE_DISTANCE
+  -------         PROC          ULTRASOUND_MODULE_INIT
+  C:0607H         LINE#         145
+  C:0607H         LINE#         147
+  C:0609H         LINE#         148
+  C:060BH         LINE#         149
+  -------         ENDPROC       ULTRASOUND_MODULE_INIT
+  -------         PROC          TIMER1_INIT
+  C:05FCH         LINE#         150
+  C:05FCH         LINE#         151
+  C:05FFH         LINE#         152
+  C:0601H         LINE#         153
+  C:0604H         LINE#         154
+  C:0606H         LINE#         155
+  -------         ENDPROC       TIMER1_INIT
+  -------         PROC          LCD_INIT
+  C:059AH         LINE#         157
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/27/2016  10:54:42  PAGE 6
+
+
+  C:059AH         LINE#         158
+  C:059CH         LINE#         159
+  C:059EH         LINE#         160
+  C:05A0H         LINE#         161
+  C:05A2H         LINE#         162
+  C:05A7H         LINE#         163
+  C:05ACH         LINE#         164
+  C:05B1H         LINE#         165
+  -------         ENDPROC       LCD_INIT
+  -------         PROC          _WRITE_COM
+  D:0007H         SYMBOL        com
+  C:0003H         LINE#         167
+  C:0003H         LINE#         168
+  C:0005H         LINE#         170
+  C:0005H         LINE#         171
+  C:0005H         LINE#         172
+  C:0005H         LINE#         173
+  C:0008H         LINE#         174
+  C:000AH         LINE#         175
+  -------         ENDPROC       _WRITE_COM
+  C:05E3H         SYMBOL        L?0047
+  -------         PROC          L?0046
+  -------         ENDPROC       L?0046
+  C:05E3H         SYMBOL        L?0047
+  -------         PROC          _WRITE_DATA
+  D:0007H         SYMBOL        dat
+  C:05E8H         LINE#         176
+  C:05E8H         LINE#         177
+  C:05EAH         LINE#         179
+  C:05EAH         LINE#         180
+  C:05EAH         LINE#         181
+  C:05EAH         LINE#         182
+  C:05EDH         LINE#         183
+  C:05EFH         LINE#         184
+  -------         ENDPROC       _WRITE_DATA
+  -------         PROC          LCD_SHOW
+  -------         DO            
+  D:0002H         SYMBOL        num
+  -------         ENDDO         
+  C:057AH         LINE#         185
+  C:057AH         LINE#         187
+  C:057FH         LINE#         188
+  C:0582H         LINE#         189
+  C:058BH         LINE#         190
+  C:058EH         LINE#         191
+  C:0599H         LINE#         192
+  -------         ENDPROC       LCD_SHOW
+  -------         PROC          MAIN
+  C:04FCH         LINE#         194
+  C:04FCH         LINE#         195
+  C:04FFH         LINE#         196
+  C:0504H         LINE#         197
+  C:0507H         LINE#         198
+  C:050AH         LINE#         201
+  C:050AH         LINE#         203
+  C:050DH         LINE#         204
+  C:0510H         LINE#         205
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/27/2016  10:54:42  PAGE 7
+
+
+  C:0513H         LINE#         206
+  C:0515H         LINE#         207
+  C:0518H         LINE#         208
+  C:051AH         LINE#         209
+  C:0520H         LINE#         210
+  C:0523H         LINE#         211
+  C:052AH         LINE#         212
+  -------         ENDPROC       MAIN
+  -------         PROC          TIMER1
+  C:05D0H         LINE#         215
+  C:05D2H         LINE#         216
+  C:05DAH         LINE#         217
+  C:05DDH         LINE#         218
+  C:05E0H         LINE#         219
+  -------         ENDPROC       TIMER1
+  -------         ENDMOD        ULTRASOUND
+
+  -------         MODULE        ?C?FPMUL
+  C:000EH         PUBLIC        ?C?FPMUL
+  -------         ENDMOD        ?C?FPMUL
+
+  -------         MODULE        ?C?FPDIV
+  C:0117H         PUBLIC        ?C?FPDIV
+  -------         ENDMOD        ?C?FPDIV
+
+  -------         MODULE        ?C?FCAST
+  C:01BEH         PUBLIC        ?C?FCASTC
+  C:01B9H         PUBLIC        ?C?FCASTI
+  C:01B4H         PUBLIC        ?C?FCASTL
+  -------         ENDMOD        ?C?FCAST
+
+  -------         MODULE        ?C?CASTF
+  C:01F2H         PUBLIC        ?C?CASTF
+  -------         ENDMOD        ?C?CASTF
+
+  -------         MODULE        ?C?LMUL
+  C:0273H         PUBLIC        ?C?LMUL
+  -------         ENDMOD        ?C?LMUL
+
+  -------         MODULE        ?C?ULDIV
+  C:02FEH         PUBLIC        ?C?ULDIV
+  -------         ENDMOD        ?C?ULDIV
+
+  -------         MODULE        ?C?LNEG
+  C:0390H         PUBLIC        ?C?LNEG
+  -------         ENDMOD        ?C?LNEG
+
+  -------         MODULE        ?C?ULCMP
+  C:039EH         PUBLIC        ?C?ULCMP
+  -------         ENDMOD        ?C?ULCMP
+
+Program Size: data=28.0 xdata=0 code=1548
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

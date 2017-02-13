@@ -1,0 +1,60 @@
+C51 COMPILER V9.00   INTERRUPT2                                                            11/07/2016 14:20:30 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE INTERRUPT2
+OBJECT MODULE PLACED IN .\Objects\interrupt2.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE interrupt2.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRI
+                    -NT(.\Listings\interrupt2.lst) TABS(2) OBJECT(.\Objects\interrupt2.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF INTERRUPT2.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          uint count=0;
+   5          uint flag=0;
+   6          void main(){
+   7   1        flag=0;
+   8   1        EA=1;
+   9   1        EX0=1;
+  10   1        IE0=0;
+  11   1        while(1){
+  12   2          while(flag==0);
+  13   2          switch(count%10){
+  14   3            case 0:
+  15   3              P1=0x00;
+  16   3              break;
+  17   3            case 1:
+  18   3              P1=0xf0;
+  19   3              break;
+  20   3            case 2:
+  21   3              P1=0x0f;
+  22   3              break;
+  23   3            default:
+  24   3              P1=0xfe;
+  25   3              break;
+  26   3          }
+  27   2          flag=0;
+  28   2        }
+  29   1        
+  30   1      }
+  31          void int0() interrupt 0{
+  32   1        count++;
+  33   1        flag=1;
+  34   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     86    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

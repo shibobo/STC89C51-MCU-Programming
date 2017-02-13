@@ -1,0 +1,249 @@
+C51 COMPILER V9.00   PWM                                                                   10/15/2016 10:50:15 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\Objects\pwm.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE pwm.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\pwm.l
+                    -st) TABS(2) OBJECT(.\Objects\pwm.obj)
+
+line level    source
+
+   1          //keil5超好用的说
+   2          #include <reg52.h>
+   3          #include <intrins.h>
+   4          #include <string.h>
+   5          #include <stdio.h>
+   6          #define uchar unsigned char
+   7          #define uint unsigned int
+   8          //控制左边电机
+   9          sbit int1=P1^0;
+  10          sbit int2=P1^1;
+  11          //控制右边电机
+  12          sbit int3=P1^2;
+  13          sbit int4=P1^3;
+  14          //pwm调速
+  15          sbit left_motor_pwm_port=P1^6;
+  16          sbit right_motor_pwm_port=P1^7;
+  17          #define left_motor_go      {int1=1,int2=0;}
+  18          #define left_motor_back    {int1=0,int2=1;} 
+  19          #define right_motor_go     {int3=1,int4=0;} 
+  20          #define right_motor_back   {int3=0,int4=1;}
+  21          uchar code leddata[]={ 
+  22                          0x3F,  //"0"
+  23                          0x06,  //"1"
+  24                          0x5B,  //"2"
+  25                          0x4F,  //"3"
+  26                          0x66,  //"4"
+  27                          0x6D,  //"5"
+  28                          0x7D,  //"6"
+  29                          0x07,  //"7"
+  30                          0x7F,  //"8"
+  31                          0x6F,  //"9"
+  32                          0x77,  //"A"
+  33                          0x7C,  //"B"
+  34                          0x39,  //"C"
+  35                          0x5E,  //"D"
+  36                          0x79,  //"E"
+  37                          0x71,  //"F"
+  38                          0x76,  //"H"
+  39                          0x38,  //"L"
+  40                          0x37,  //"n"
+  41                          0x3E,  //"u"
+  42                          0x73,  //"P"
+  43                          0x5C,  //"o"
+  44                          0x40,  //"-"
+  45                          0x00,  //??
+  46                          0x80  //???
+  47          };
+  48          //
+  49          uchar push_left_pwm_value=0;
+  50          uchar push_right_pwm_value=0;
+  51          uchar left_pwm_value=0;
+  52          uchar right_pwm_value=0;
+  53          //
+  54          bit right_motor_stop=1;
+C51 COMPILER V9.00   PWM                                                                   10/15/2016 10:50:15 PAGE 2   
+
+  55          bit left_motor_stop =1;
+  56          //
+  57          //1602
+  58          sbit leden=P3^4;//EN
+  59          sbit ledrs=P3^5;//RS
+  60          sbit ledrw=P3^6;//RW
+  61          sbit dula=P2^6;
+  62          sbit wela=P2^7;
+  63          uchar code left_speed[]={"LS is five"};
+  64          uchar code right_speed[]={"RS is five"};
+  65          //char left_speed[];
+  66          //char right_speed[];
+  67          uchar num;
+  68          //
+  69          void delayms(uint z){
+  70   1        uint x,y;
+  71   1        for(x=z;x>0;x--)
+  72   1          for(y=114;y>0;y--);
+  73   1      }
+  74          //
+  75          void write_com(uchar com){
+  76   1        ledrs=0;
+  77   1        //ledrw=0;
+  78   1        P0=com;
+  79   1        delayms(5);
+  80   1        leden=1;
+  81   1        delayms(5);
+  82   1        leden=0;
+  83   1      }
+  84          void write_data(uchar date){
+  85   1        ledrs=1;
+  86   1        //ledrw=0;
+  87   1        P0=date;
+  88   1        delayms(5);
+  89   1        leden=1;
+  90   1        delayms(5);
+  91   1        leden=0;
+  92   1      }
+  93          void write_1602_show(){
+  94   1        //init 1602
+  95   1        dula=0;
+  96   1        wela=0;
+  97   1        leden=0;
+  98   1        ledrw=0;
+  99   1        write_com(0x38);
+ 100   1        write_com(0x0c);
+ 101   1        write_com(0x06);
+ 102   1        write_com(0x01);
+ 103   1        //
+ 104   1        write_com(0x80);
+ 105   1      
+ 106   1        //uchar code left_speed[]="Left-Speed:5";
+ 107   1        //uchar code right_speed[]="Right-Speed:5";
+ 108   1        //strcat(left_speed,"abc");
+ 109   1        //strcat(right_speed,"123");
+ 110   1        for(num=0;num<10;num++){
+ 111   2          write_data(left_speed[num]);
+ 112   2          delayms(5);
+ 113   2        }
+ 114   1        //change address
+ 115   1        write_com(0x80+0x40);
+ 116   1        for(num=0;num<10;num++){
+C51 COMPILER V9.00   PWM                                                                   10/15/2016 10:50:15 PAGE 3   
+
+ 117   2          write_data(right_speed[num]);
+ 118   2          delayms(5);
+ 119   2        }
+ 120   1      }
+ 121          
+ 122          void run(uchar val1,uchar val2){
+ 123   1        //set pwm value
+ 124   1        push_left_pwm_value=val1;
+ 125   1        push_right_pwm_value=val2;
+ 126   1        left_motor_go;
+ 127   1        right_motor_go;
+ 128   1      }
+ 129          void init(){
+ 130   1        TMOD=0X01;
+ 131   1        TH0= 0XF8;      //50ms??
+ 132   1        TL0= 0X30;
+ 133   1        TR0= 1;
+ 134   1        ET0= 1;
+ 135   1        EA = 1;
+ 136   1      }
+ 137          void main(){
+ 138   1         // while(1){
+ 139   1         // //??
+ 140   1         // int1=1;
+ 141   1         // int2=0;
+ 142   1         // int3=1;
+ 143   1         // int4=0;
+ 144   1         // delayms();
+ 145   1         // //??
+ 146   1         // int1=0;
+ 147   1         // int2=1;
+ 148   1         // int3=0;
+ 149   1         // int4=1;
+ 150   1         // delayms();
+ 151   1         // //??????
+ 152   1         // int1=0;
+ 153   1         // int2=0;
+ 154   1         // int3=1;
+ 155   1         // int4=0;
+ 156   1         // delayms();
+ 157   1         // //??????
+ 158   1         // int1=1;
+ 159   1         // int2=0;
+ 160   1         // int3=0;
+ 161   1         // int4=0;
+ 162   1         // delayms();
+ 163   1         // }
+ 164   1        init();
+ 165   1        while(1){
+ 166   2          //loop
+ 167   2          // run(2,2);
+ 168   2          // delayms(2000);
+ 169   2          // run(5,5);
+ 170   2          // delayms(2000);
+ 171   2          // run(8,8);
+ 172   2          // delayms(2000);
+ 173   2          uchar i;
+ 174   2          for(i=2;i<=10;i++){
+ 175   3            run(i,i);
+ 176   3            delayms(2000);
+ 177   3            write_1602_show();
+ 178   3          }
+C51 COMPILER V9.00   PWM                                                                   10/15/2016 10:50:15 PAGE 4   
+
+ 179   2        }
+ 180   1      }
+ 181          void change_pwm_left(){
+ 182   1        //generate left pwm
+ 183   1        if(left_motor_stop){
+ 184   2          if(left_pwm_value<=push_left_pwm_value){
+ 185   3            left_motor_pwm_port=1;
+ 186   3          }else{
+ 187   3            left_motor_pwm_port=0;
+ 188   3          }
+ 189   2          if(left_pwm_value>=10){
+ 190   3            left_pwm_value=0;
+ 191   3          }
+ 192   2        }else{
+ 193   2          left_motor_pwm_port=0;
+ 194   2        }
+ 195   1      }
+ 196          void change_pwm_right(){
+ 197   1          //generate right pwm
+ 198   1        if(right_motor_stop){
+ 199   2          if(right_pwm_value<=push_right_pwm_value){
+ 200   3            right_motor_pwm_port=1;
+ 201   3          }else{
+ 202   3            right_motor_pwm_port=0;
+ 203   3          }
+ 204   2          if(right_pwm_value>=10){
+ 205   3            right_pwm_value=0;
+ 206   3          }
+ 207   2        }else{
+ 208   2          left_motor_pwm_port=0;
+ 209   2        }
+ 210   1      }
+ 211          
+ 212          void timer0() interrupt 1{
+ 213   1          TH0= 0XF8;      //1ms??
+ 214   1          TL0= 0X30;
+ 215   1          left_pwm_value++;
+ 216   1          right_pwm_value++;
+ 217   1          change_pwm_left();
+ 218   1          change_pwm_right();
+ 219   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    298    ----
+   CONSTANT SIZE    =     47    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

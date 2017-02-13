@@ -1,0 +1,3 @@
+".\Objects\testcar.obj" 
+TO ".\Objects\smartcar" 
+PRINT(".\Listings\smartcar.m51") RAMSIZE(256) 

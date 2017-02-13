@@ -1,0 +1,169 @@
+C51 COMPILER V9.00   HONGWAI1                                                              12/01/2016 11:31:05 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE HONGWAI1
+OBJECT MODULE PLACED IN .\Objects\hongwai1.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE hongwai1.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT
+                    -(.\Listings\hongwai1.lst) TABS(2) OBJECT(.\Objects\hongwai1.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF HONGWAI1.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          uint temp0,bai0,shi0,ge0,aa0,n0;
+   5          uint temp1,bai1,shi1,ge1,aa1,n1;
+   6          sbit outint0=P3^2;//外部中断从这里引
+   7          sbit outint1=P3^3;//外部中断从这里引
+   8          sbit leden=P3^4;//EN
+   9          sbit ledrs=P3^5;//RS
+  10          sbit ledrw=P3^6;//RW
+  11          //sbit dula=P2^6;
+  12          //sbit wela=P2^7;
+  13          uchar code table[]="0123456789";
+  14          uchar code table1[]={ 
+  15                          0x3F,  //"0"
+  16                          0x06,  //"1"
+  17                          0x5B,  //"2"
+  18                          0x4F,  //"3"
+  19                          0x66,  //"4"
+  20                          0x6D,  //"5"
+  21                          0x7D,  //"6"
+  22                          0x07,  //"7"
+  23                          0x7F,  //"8"
+  24                          0x6F  //"9"
+  25          };
+  26          void delayms(uint time){
+  27   1        uint x,y;
+  28   1        for(x=time;x>0;x--)
+  29   1          for(y=110;y>0;y--);
+  30   1      }
+  31          void write_com(uchar com){
+  32   1        ledrs=0;
+  33   1        //ledrw=0;
+  34   1        P2=com;
+  35   1        delayms(5);
+  36   1        leden=1;
+  37   1        delayms(5);
+  38   1        leden=0;
+  39   1      }
+  40          void write_data(uchar date){
+  41   1        ledrs=1;
+  42   1        //ledrw=0;
+  43   1        P2=date;
+  44   1        delayms(5);
+  45   1        leden=1;
+  46   1        delayms(5);
+  47   1        leden=0;
+  48   1      }
+  49          void init(){
+  50   1        //dula=0;
+  51   1        //wela=0;
+  52   1        temp0=0;
+  53   1        temp1=0;
+C51 COMPILER V9.00   HONGWAI1                                                              12/01/2016 11:31:05 PAGE 2   
+
+  54   1        bai0=0;
+  55   1        shi0=0;
+  56   1        ge0=0;
+  57   1        bai1=0;
+  58   1        shi1=0;
+  59   1        ge1=0;
+  60   1        TMOD=0x01;//定时器0工作模式1
+  61   1        TCON|=0x0F;
+  62   1        TH0=(65536-50000)/256;
+  63   1        TL0=(65536-80000)%256;
+  64   1        ET0=1;
+  65   1        TR0=1;
+  66   1        EA=1;
+  67   1      }
+  68          void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1){
+  69   1        write_com(0x80);
+  70   1        write_data('R');
+  71   1        write_data(':');
+  72   1        write_data(table[bai0]);
+  73   1        //delayms(5);
+  74   1        write_data(table[shi0]);
+  75   1        //delayms(5);
+  76   1        write_data(table[ge0]);
+  77   1        //delayms(5);
+  78   1        write_com(0x80+0x06);
+  79   1        write_data('L');
+  80   1        write_data(':');
+  81   1        //delayms(5);
+  82   1        write_data(table[bai1]);
+  83   1        //delayms(5);
+  84   1        write_data(table[shi1]);
+  85   1        //delayms(5);
+  86   1        write_data(table[ge1]);
+  87   1        //delayms(5);
+  88   1      }
+  89          void init1602(){
+  90   1        leden=0;
+  91   1        ledrw=0;
+  92   1        write_com(0x38);
+  93   1        write_com(0x0c);
+  94   1        write_com(0x06);
+  95   1        write_com(0x01);
+  96   1      }
+  97          void main(){
+  98   1        EA=1;
+  99   1        EX0=1;
+ 100   1        EX1=1;
+ 101   1        init1602();
+ 102   1        init();
+ 103   1        while(1){
+ 104   2          display1602(bai0,shi0,ge0,bai1,shi1,ge1);
+ 105   2          //display1602(1,2,3,4,5,6);
+ 106   2          //write_com(0x80);
+ 107   2          //write_data(table[2]);
+ 108   2        }
+ 109   1      }
+ 110          void out0() interrupt 0{
+ 111   1        n0++;//高电平的个数
+ 112   1        while(outint0==0);
+ 113   1      }
+ 114          void out1() interrupt 2{
+ 115   1        n1++;
+C51 COMPILER V9.00   HONGWAI1                                                              12/01/2016 11:31:05 PAGE 3   
+
+ 116   1        while(outint1==0);
+ 117   1      }
+ 118          void timer0() interrupt 1{
+ 119   1        TH0=(65536-50000)/256;
+ 120   1        TL0=(65536-80000)%256;
+ 121   1        aa0++;
+ 122   1        aa1++;
+ 123   1        if(aa0==10){
+ 124   2          aa0=0;
+ 125   2          temp0=5*n0;
+ 126   2          n0=0;
+ 127   2          bai0=temp0/100;
+ 128   2          shi0=temp0%100/10;
+ 129   2          ge0=temp0%10;
+ 130   2        }
+ 131   1        if(aa1==10){
+ 132   2          aa1=0;
+ 133   2          temp1=5*n1;
+ 134   2          n1=0;
+ 135   2          bai1=temp1/100;
+ 136   2          shi1=temp1%100/10;
+ 137   2          ge1=temp1%10;
+ 138   2        }
+ 139   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    523    ----
+   CONSTANT SIZE    =     21    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24      12
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,195 @@
+C51 COMPILER V9.00   MSBUF                                                                 12/07/2016 21:13:22 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MSBUF
+OBJECT MODULE PLACED IN .\Objects\msbuf.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE msbuf.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
+                    -Listings\msbuf.lst) TABS(2) OBJECT(.\Objects\msbuf.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF MSBUF.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          #include <stdlib.h>
+   5          #define uint unsigned int
+   6          #define uchar unsigned char
+   7          sbit dula=P2^6;
+   8          sbit wela=P2^7;
+   9          uchar flag,a;
+  10          uchar t0num;
+  11          float ad_vo,ad_val;
+  12          uchar flag_uart,flag_on,flag_time;
+  13          uchar code table[]={ 
+  14                          0x3F,  //"0"
+  15                          0x06,  //"1"
+  16                          0x5B,  //"2"
+  17                          0x4F,  //"3"
+  18                          0x66,  //"4"
+  19                          0x6D,  //"5"
+  20                          0x7D,  //"6"
+  21                          0x07,  //"7"
+  22                          0x7F,  //"8"
+  23                          0x6F,  //"9"
+  24                          0x77,  //"A"
+  25                          0x7C,  //"B"
+  26                          0x39,  //"C"
+  27                          0x5E,  //"D"
+  28                          0x79,  //"E"
+  29                          0x71,  //"F"
+  30                          0x76,  //"H"
+  31                          0x38,  //"L"
+  32                          0x37,  //"n"
+  33                          0x3E,  //"u"
+  34                          0x73,  //"P"
+  35                          0x5C,  //"o"
+  36                          0x40,  //"-"
+  37          };
+  38          void delayms(uchar time){
+  39   1        uint i,j;
+  40   1        for(i=time;i>0;i--){
+  41   2          for(j=110;j>0;j--){
+  42   3            //to do something
+  43   3          }
+  44   2        }
+  45   1      }
+  46          void init(){
+  47   1        TMOD=0x21;
+  48   1        SCON=0x50;
+  49   1        TH0=(65536-50000)/256;
+  50   1        TL0=(65536-50000)%256;
+  51   1        TH1=0xfd;
+  52   1        TL1=0xfd;
+  53   1        TR1=1;
+C51 COMPILER V9.00   MSBUF                                                                 12/07/2016 21:13:22 PAGE 2   
+
+  54   1        ET0=1;
+  55   1        SM0=0;
+  56   1        SM1=1;
+  57   1        REN=1;
+  58   1        EA=1;
+  59   1        ES=1;
+  60   1      }
+  61          void display(uchar value){
+  62   1        uchar bai,shi,ge;
+  63   1        bai=value/100;
+  64   1        shi=value%100/10;
+  65   1        ge=value%10;
+  66   1        
+  67   1        dula=1;
+  68   1        P0=table[bai];
+  69   1        dula=0;
+  70   1        P0=0xff;
+  71   1        wela=1;
+  72   1        P0=0xfe;
+  73   1        wela=0;
+  74   1        delayms(5);
+  75   1        
+  76   1        dula=1;
+  77   1        P0=table[shi];
+  78   1        dula=0;
+  79   1        P0=0xff;
+  80   1        wela=1;
+  81   1        P0=0xfd;
+  82   1        wela=0;
+  83   1        delayms(5);
+  84   1        
+  85   1        dula=1;
+  86   1        P0=table[ge];
+  87   1        dula=0;
+  88   1        P0=0xff;
+  89   1        wela=1;
+  90   1        P0=0xfb;
+  91   1        wela=0;
+  92   1        delayms(5);
+  93   1      }
+  94          float get_ad(){
+  95   1        float adval;
+  96   1        //产生随机数
+  97   1        //随机数=(0~100)%100,即100以内的随机数对100取余数
+  98   1        //srand((uint)time(NULL));
+  99   1        adval=rand()%256;
+ 100   1        return adval;
+ 101   1      }
+ 102          void main(){
+ 103   1        init();
+ 104   1        wela=1;
+ 105   1        P0=0xff;
+ 106   1        wela=0;
+ 107   1        while(1){
+ 108   2          if(flag_uart==1){
+ 109   3            flag_uart=0;
+ 110   3            ES=0;
+ 111   3            TI=1;
+ 112   3            switch(flag_on){
+ 113   4              case 0:
+ 114   4                puts("turn on ad");
+ 115   4                TR0=1;//定时器0开启
+C51 COMPILER V9.00   MSBUF                                                                 12/07/2016 21:13:22 PAGE 3   
+
+ 116   4                break;
+ 117   4              case 1:
+ 118   4                printf("turn off ad");
+ 119   4                TR0=0;//定时器0关闭
+ 120   4                break;
+ 121   4              case 2:
+ 122   4                puts("error!");
+ 123   4                break;
+ 124   4            }
+ 125   3            while(!TI);
+ 126   3            TI=0;
+ 127   3            ES=1;
+ 128   3          }
+ 129   2          if(flag_time==1){
+ 130   3            flag_time=0;
+ 131   3            ad_val=get_ad();
+ 132   3            display(ad_val);
+ 133   3            ad_vo=ad_val/256.0*5.0;
+ 134   3            ES=0;
+ 135   3            TI=1;
+ 136   3            printf("ad_val=%f\n",ad_val);
+ 137   3            printf("the voltage is %fV\n",ad_vo);
+ 138   3            while(!TI);
+ 139   3            TI=0;
+ 140   3            ES=1;
+ 141   3          }
+ 142   2          display(ad_val);  
+ 143   2        }
+ 144   1      }
+ 145          void timer0() interrupt 1{
+ 146   1        TH0=(65536-50000)/256;
+ 147   1        TL0=(65536-50000)%256;
+ 148   1        t0num++;
+ 149   1        if(t0num==20){//每1s采集一次数据
+ 150   2          t0num=0;
+ 151   2          flag_time=1;
+ 152   2        }
+ 153   1      }
+ 154          void ser() interrupt 4{
+ 155   1        RI=0;
+ 156   1        a=SBUF;
+ 157   1        flag_uart=1;
+ 158   1        if(a==48){
+ 159   2          flag_on=0;
+ 160   2        }else if(a==49){
+ 161   2          flag_on=1;
+ 162   2        }else{
+ 163   2          flag_on=2;
+ 164   2        }
+ 165   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    458    ----
+   CONSTANT SIZE    =     84    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -8,7 +8,7 @@ sbit EN=P3^4;
 //whether lcd is busy,busy wait
 void Read_Busy(){
 	uchar busy;
-	P0=0xff;
+	P2=0xff;
 	RS=0;
 	RW=1;
 	do{
@@ -23,7 +23,7 @@ void Write_Cmd(uchar cmd){
 	Read_Busy();
 	RS=0;
 	RW=0;
-	P0=cmd;
+	P2=cmd;
 	EN=1;
 	EN=0;
 }

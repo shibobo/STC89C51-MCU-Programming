@@ -1,80 +1,138 @@
-C51 COMPILER V8.08   TEXT1                                                                 09/20/2016 17:25:46 PAGE 1   
+C51 COMPILER V9.00   TEXT1                                                                 10/18/2016 13:57:46 PAGE 1   
 
 
-C51 COMPILER V8.08, COMPILATION OF MODULE TEXT1
+C51 COMPILER V9.00, COMPILATION OF MODULE TEXT1
 OBJECT MODULE PLACED IN Text1.OBJ
-COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE Text1.c BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Text1.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
 
 line level    source
 
    1          #include <reg52.h>
    2          #include <intrins.h>
-   3          #define uint unsigned int          //52系列单片机头文件
-   4          sbit led1=P1^0;            //声明单片机p1口第一个
-   5          sbit led2=P1^1;
-   6          void delay(uint time1,uint time2);
-   7          /** 任意点亮
-   8          void main(){
-   9             //led1=0;                   //点亮第一个放光二极管
-  10             //led2=0;
-  11             //P1=0x00;                                   //点亮所有的二极管
-  12             //P1=0xaa;                                           //1,3,5,7亮
-  13             P1=0x55;                                     //2,4,6,8亮
-  14          }*/
-  15          /**
-  16          void main(void){
-  17             P1=0xFE;
-  18             while(1);
-  19          }*/
-  20          /**void main(void){
-  21            unsigned char i,j;
-  22            for(i=255;i>0;i--)
-  23              for(j=255;j>0;j--)
-  24            P1=0xfe;
-  25          }*/
-  26          
-  27          /**void main(void){
-  28              //大循环
-  29                  while(1){
-  30                      led1=0;
-  31                          led2=1;
-  32                          //延时
-  33                          delay(100,100);
-  34                          led1=1;
-  35                          led2=0;
-  36                          //延时
-  37                          delay(100,100);
-  38                  };
-  39          }*/
-  40          void delay(uint time1,uint time2){
-  41   1          uint i,j;
-  42   1          for(i=time1;i>0;i--)
-  43   1                  for(j=time2;j>0;j--);
-  44   1      }
-  45          //左移测试a<<1;右移测试a>>1
-  46          unsigned char a;
-  47          void main(void){
-  48   1          a=0xFF;
-  49   1              while(1){
-  50   2              a=a>>1;
-  51   2                      P1=a;
-  52   2                      delay(200,200);
-  53   2                      if(a==0x00){
-  54   3                          a=0xFF;
-  55   3                              delay(200,200);
-C51 COMPILER V8.08   TEXT1                                                                 09/20/2016 17:25:46 PAGE 2   
+   3          #define uchar unsigned char
+   4          #define uint unsigned int    //52系列单片机头文件
+   5          sbit led1=P1^0;      //声明单片机p1口第一个
+   6          sbit led2=P1^1;
+   7          //void delay(uint time1,uint time2);
+   8          /** 任意点亮
+   9          void main(){
+  10             //led1=0;           //点亮第一个放光二极管
+  11             //led2=0;
+  12             //P1=0x00;         //点亮所有的二极管
+  13             //P1=0xaa;           //1,3,5,7亮
+  14             P1=0x55;         //2,4,6,8亮
+  15          }*/
+  16          /**
+  17          void main(void){
+  18             P1=0xFE;
+  19             while(1);
+  20          }*/
+  21          /**void main(void){
+  22            unsigned char i,j;
+  23            for(i=255;i>0;i--)
+  24              for(j=255;j>0;j--)
+  25            P1=0xfe;
+  26          }*/
+  27          
+  28          /**void main(void){
+  29              //大循环
+  30            while(1){
+  31                led1=0;
+  32              led2=1;
+  33              //延时
+  34              delay(100,100);
+  35              led1=1;
+  36              led2=0;
+  37              //延时
+  38              delay(100,100);
+  39            };
+  40          }*/
+  41          //void delay(uint time1,uint time2){
+  42            //  uint i,j;
+  43              //for(i=time1;i>0;i--)
+  44                //for(j=time2;j>0;j--);
+  45          //}
+  46          //左移测试a<<1;右移测试a>>1
+  47          //unsigned char a;
+  48          //void main(void){
+  49            //  a=0xFF;
+  50            //while(1){
+  51             //     a=a>>1;
+  52            //  P1=a;
+  53            //  delay(200,200);
+  54            //  if(a==0x00){
+  55            //      a=0xFF;
+C51 COMPILER V9.00   TEXT1                                                                 10/18/2016 13:57:46 PAGE 2   
 
-  56   3                      }
-  57   2              }
-  58   1      }
+  56            //  }
+  57            //}
+  58          //}
+  59          //测试蓝牙模块是否能够正常收发数据
+  60          void init()
+  61             { 
+  62   1           //等全亮了
+  63   1           //led1=0;
+  64   1           //led2=0;
+  65   1           ////init
+  66   1           //关闭中中断
+  67   1           ES=0;
+  68   1           //串口工作模式1
+  69   1           SCON=0x50;//等同于sm0=0,sm1=1,ren=1
+  70   1           TMOD=0x20;//定时器T1工作模式2
+  71   1           TH1=0xfd;
+  72   1           TL1=0xfd;
+  73   1           TR1=1;//定时器1开始工作
+  74   1           TI=0;
+  75   1           RI=0;
+  76   1           EA=1;
+  77   1           ES=1;
+  78   1         }
+  79            void actionforSBUF(uchar a){
+  80   1                 //ES=0;
+  81   1                 //RI=0;  
+  82   1                 //a=SBUF; 
+  83   1            //SBUF=a;
+  84   1            //a=SBUF;
+  85   1                
+  86   1           switch(a)
+  87   1          {
+  88   2            case 31:  
+  89   2              led1=0;
+  90   2              led2=1;     
+  91   2              break;  
+  92   2            case 32:  
+  93   2              led1=1;
+  94   2              led2=0;     
+  95   2              break;   
+  96   2            default: 
+  97   2              led1=0;
+  98   2              led2=0;
+  99   2              break;
+ 100   2           } 
+ 101   1        //ES=1;
+ 102   1      }
+ 103              void main()
+ 104              {
+ 105   1              init();
+ 106   1              while(1){
+ 107   2                if(RI){
+ 108   3                  RI=0;
+ 109   3                  //a=SBUF;
+ 110   3                }
+ 111   2                actionforSBUF(SBUF);
+ 112   2              }
+ 113   1           }
+ 114              
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     74    ----
+C51 COMPILER V9.00   TEXT1                                                                 10/18/2016 13:57:46 PAGE 3   
+
+   CODE SIZE        =     63    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      1    ----
+   DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

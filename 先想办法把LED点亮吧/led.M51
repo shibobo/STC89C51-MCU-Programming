@@ -1,8 +1,8 @@
-BL51 BANKED LINKER/LOCATER V6.05                                                        09/19/2016  11:29:28  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        10/15/2016  10:36:18  PAGE 1
 
 
-BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
-C:\KEIL\C51\BIN\BL51.EXE led.obj TO led RAMSIZE (256)
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE led.obj TO led RAMSIZE (256)
 
 
 MEMORY MODEL: SMALL
@@ -10,8 +10,8 @@ MEMORY MODEL: SMALL
 
 INPUT MODULES INCLUDED:
   led.obj (LED)
-  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
-  C:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
 
 
 LINK MAP OF MODULE:  led (LED)
@@ -59,7 +59,7 @@ SYMBOL TABLE OF MODULE:  led (LED)
   C:0003H         PUBLIC        main
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
-BL51 BANKED LINKER/LOCATER V6.05                                                      09/19/2016  11:29:28  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/15/2016  10:36:18  PAGE 2
 
 
   D:0008H         PUBLIC        a
@@ -119,7 +119,7 @@ SYMBOL TABLE OF MODULE:  led (LED)
   C:007BH         LINE#         53
   C:007DH         LINE#         54
   C:007FH         LINE#         55
-BL51 BANKED LINKER/LOCATER V6.05                                                      09/19/2016  11:29:28  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/15/2016  10:36:18  PAGE 3
 
 
   C:0081H         LINE#         56

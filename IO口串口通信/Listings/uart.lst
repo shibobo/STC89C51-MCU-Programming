@@ -1,0 +1,129 @@
+C51 COMPILER V9.00   UART                                                                  10/18/2016 19:35:38 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\uart.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE uart.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\uart
+                    -.lst) TABS(2) OBJECT(.\Objects\uart.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          sbit PIN_RXD=P3^0;
+   3          sbit PIN_TXD=P3^1;
+   4          
+   5          bit RxdEnd=0;
+   6          bit RxdOrTxd=0;
+   7          unsigned char RxdBuf=0;
+   8          unsigned char TxdBuf=0;
+   9          bit TxdEnd=0;
+  10          void ConfigUART(unsigned int baud);
+  11          void StartRXD();
+  12          void StartTXD(unsigned char dat);
+  13          
+  14          void main(){
+  15   1        EA=1;
+  16   1        ConfigUART(9600);
+  17   1        while(1){
+  18   2          while(PIN_RXD);
+  19   2          StartRXD();
+  20   2          while(!RxdEnd);
+  21   2          StartTXD(RxdBuf+1);
+  22   2          while(!TxdEnd);
+  23   2        }
+  24   1      }
+  25          
+  26          void ConfigUART(unsigned int baud){
+  27   1        TMOD &=0xf0;
+  28   1        TMOD |=0x02;
+  29   1        TH0=256-(11059200/12)/baud;
+  30   1        
+  31   1      }
+  32          void StartRXD(){
+  33   1        TL0=256-((256-TH0)>>1);
+  34   1        ET0=1;
+  35   1        TR0=1;
+  36   1        RxdEnd=0;
+  37   1        RxdOrTxd=0;
+  38   1      }
+  39          void StartTXD(unsigned char dat){
+  40   1        TxdBuf=dat;
+  41   1        TL0=TH0;
+  42   1        ET0=1;
+  43   1        TR0=1;
+  44   1        PIN_TXD=0;
+  45   1        TxdEnd=0;
+  46   1        RxdOrTxd=1;
+  47   1        switch(dat){
+  48   2          case 12:
+  49   2            P1=0x00;
+  50   2            break;
+  51   2          case 13:
+  52   2            P1=0xf0;
+  53   2            break;
+  54   2          default:
+C51 COMPILER V9.00   UART                                                                  10/18/2016 19:35:38 PAGE 2   
+
+  55   2            break;
+  56   2        }
+  57   1      }
+  58          void interruptTimer0() interrupt 1{
+  59   1        static unsigned char cnt=0;
+  60   1        if(RxdOrTxd){
+  61   2          cnt++;
+  62   2          if(cnt<=8){
+  63   3            PIN_TXD=TxdBuf & 0x01;
+  64   3            TxdBuf>>=1;
+  65   3          }else if(cnt==9){
+  66   3            PIN_TXD=1;      
+  67   3          }else{
+  68   3            cnt=0;
+  69   3            TR0=0;
+  70   3            TxdEnd=1;
+  71   3          }
+  72   2        }else{
+  73   2          if(cnt==0){
+  74   3            if(!PIN_RXD){
+  75   4               RxdBuf=0;
+  76   4               cnt++;
+  77   4            }else{
+  78   4               TR0=0;
+  79   4            }
+  80   3          }else if(cnt<=8){
+  81   3            RxdBuf>>=1;
+  82   3            if(PIN_RXD){
+  83   4               RxdBuf |=0x80;
+  84   4            }
+  85   3            cnt++;
+  86   3          }else{
+  87   3            cnt=0;
+  88   3            TR0=0;
+  89   3            if(PIN_RXD){
+  90   4               RxdEnd=1;
+  91   4            }
+  92   3          }
+  93   2        }
+  94   1      }
+  95          
+  96          
+  97          
+  98          
+  99          
+ 100          
+ 101          
+ 102          
+ 103          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    218    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

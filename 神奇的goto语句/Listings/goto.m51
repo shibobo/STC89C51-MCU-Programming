@@ -1,0 +1,108 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        11/04/2016  11:29:23  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+D:\PROGRAM FILES\KEIL5\C51\BIN\BL51.EXE .\Objects\goto.obj TO .\Objects\goto PRINT (.\Listings\goto.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\goto.obj (GOTO)
+  D:\PROGRAM FILES\KEIL5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\goto (GOTO)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0029H     UNIT         ?PR?MAIN?GOTO
+            CODE    0829H     001EH     UNIT         ?PR?_DELAYMS?GOTO
+            CODE    0847H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\goto (GOTO)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?GOTO
+
+?PR?MAIN?GOTO
+  +--> ?PR?_DELAYMS?GOTO
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\goto (GOTO)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        GOTO
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0800H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2016  11:29:23  PAGE 2
+
+
+  D:0088H         PUBLIC        TCON
+  B:0090H.0       PUBLIC        led0
+  D:00C8H         PUBLIC        T2CON
+  B:0090H.2       PUBLIC        led2
+  C:0829H         PUBLIC        _delayms
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _DELAYMS
+  D:0006H         SYMBOL        time
+  -------         DO            
+  D:0006H         SYMBOL        x
+  D:0004H         SYMBOL        y
+  -------         ENDDO         
+  C:0829H         LINE#         6
+  C:0829H         LINE#         8
+  C:0832H         LINE#         9
+  C:0846H         LINE#         10
+  -------         ENDPROC       _DELAYMS
+  -------         PROC          MAIN
+  -------         DO            
+  D:0002H         SYMBOL        a
+  D:0006H         SYMBOL        b
+  -------         ENDDO         
+  C:0800H         LINE#         11
+  C:0800H         LINE#         12
+  C:0804H         LINE#         13
+  C:0804H         LINE#         14
+  C:080DH         LINE#         15
+  C:080FH         LINE#         16
+  C:0811H         LINE#         17
+  C:0818H         LINE#         19
+  C:0818H         LINE#         20
+  C:081EH         LINE#         21
+  C:0820H         LINE#         22
+  C:0827H         LINE#         23
+  C:0827H         LINE#         24
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        GOTO
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0047H BYTE ( 3%) *
+******************************************************************************
+
+Program Size: data=9.0 xdata=0 code=86
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

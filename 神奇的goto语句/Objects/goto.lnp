@@ -1,0 +1,3 @@
+".\Objects\goto.obj" 
+TO ".\Objects\goto" 
+PRINT(".\Listings\goto.m51") RAMSIZE(256) 

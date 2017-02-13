@@ -1,0 +1,93 @@
+C51 COMPILER V9.00   DELAY                                                                 10/26/2016 14:45:24 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Objects\delay.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE delay.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\del
+                    -ay.lst) TABS(2) OBJECT(.\Objects\delay.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          sbit dula=P2^6;
+   5          sbit wela=P2^7;
+   6          uchar code table[]={ 
+   7                          0x3F,  //"0"
+   8                          0x06,  //"1"
+   9                          0x5B,  //"2"
+  10                          0x4F,  //"3"
+  11                          0x66,  //"4"
+  12                          0x6D,  //"5"
+  13                          0x7D,  //"6"
+  14                          0x07,  //"7"
+  15                          0x7F,  //"8"
+  16                          0x6F,  //"9"
+  17                          0x77,  //"A"
+  18                          0x7C,  //"B"
+  19                          0x39,  //"C"
+  20                          0x5E,  //"D"
+  21                          0x79,  //"E"
+  22                          0x71,  //"F"
+  23                          0x76,  //"H"
+  24                          0x38,  //"L"
+  25                          0x37,  //"n"
+  26                          0x3E,  //"u"
+  27                          0x73,  //"P"
+  28                          0x5C,  //"o"
+  29                          0x40,  //"-"
+  30                          0x00,  //??
+  31                          0x80  //???
+  32          };
+  33          void delayms(uint z)
+  34          {
+  35   1        uint x,y;
+  36   1        for(x=z;x>0;x--)
+  37   1           for(y=120;y>0;y--);
+  38   1      }
+  39          void display(uchar num){
+  40   1        uchar shi,ge;
+  41   1        shi=num/10;
+  42   1        ge=num%10;
+  43   1        
+  44   1        dula=1;
+  45   1        P0=table[shi];
+  46   1        dula=0;
+  47   1        
+  48   1        P0=0xff;
+  49   1        wela=1;
+  50   1        P0=0xfe;
+  51   1        wela=0;
+  52   1        delayms(5);
+  53   1        
+  54   1        dula=1;
+C51 COMPILER V9.00   DELAY                                                                 10/26/2016 14:45:24 PAGE 2   
+
+  55   1        P0=table[ge];
+  56   1        dula=0;
+  57   1        
+  58   1        P0=0xff;
+  59   1        wela=1;
+  60   1        P0=0xfd;
+  61   1        wela=0;
+  62   1        delayms(5);
+  63   1      }
+  64          void main(){
+  65   1        uchar x=89;
+  66   1        display(x);
+  67   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    105    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

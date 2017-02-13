@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\hongwai1.obj" 
+TO ".\Objects\hongwai" 
+PRINT(".\Listings\hongwai.m51") RAMSIZE(256) 

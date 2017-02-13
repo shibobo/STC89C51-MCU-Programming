@@ -1,0 +1,364 @@
+C51 COMPILER V9.00   SMCAR                                                                 11/30/2016 21:32:51 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SMCAR
+OBJECT MODULE PLACED IN .\Objects\smcar.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE smcar.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
+                    -Listings\smcar.lst) TABS(2) OBJECT(.\Objects\smcar.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF SMCAR.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include "myreg52.h"
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          #define uchar unsigned char
+   5          #define uint unsigned int
+   6          #define ulong unsigned long
+   7          /**
+   8          *端口定义
+   9          */
+  10          //P1^6接电机驱动模块ENA,P1^7接电机驱动模块ENB
+  11          sbit left_motor_pwm_port=P1^6;
+  12          sbit right_motor_pwm_port=P1^7;
+  13          //左边电机的接法
+  14          sbit int1=P1^0;
+  15          sbit int2=P1^1;
+  16          //右边电机的接法
+  17          sbit int3=P1^2;
+  18          sbit int4=P1^3;
+  19          //超声波模块
+  20          sbit trig=P2^0;
+  21          sbit echo=P2^1;
+  22          //蜂鸣器
+  23          sbit feng=P2^3;
+  24          sbit led_left=P1^4;
+  25          sbit led_right=P1^5;
+  26          //lcd1602液晶显示模块
+  27          sbit lcden=P3^4;//EN
+  28          sbit lcdrs=P3^5;//RS
+  29          sbit lcdrw=P3^6;//RW
+  30          sbit dula=P2^6;
+  31          sbit wela=P2^7;
+  32          /**
+  33          *函数清单
+  34          */
+  35          void delayms(uint time);
+  36          void USModule_start();
+  37          void display(uchar dis);
+  38          void calculate_distance();
+  39          void USModule_init();
+  40          void timer0_init();
+  41          void lcd_init();
+  42          void write_com(uchar com);
+  43          void write_data(uchar dat);
+  44          void lcd_show();
+  45          void Motors_Handler();
+  46          void USMOdule_Handler();
+  47          //产生波特率  
+  48          void ConfigUART(uint baud);
+  49          //电机转动状态配置
+  50          void left_motor_go();
+  51          void left_motor_back();
+  52          void left_motor_stop();
+  53          
+C51 COMPILER V9.00   SMCAR                                                                 11/30/2016 21:32:51 PAGE 2   
+
+  54          void right_motor_go(); 
+  55          void right_motor_back();
+  56          void right_motor_stop(); 
+  57          void timer2_start();
+  58          /**
+  59          *变量清单
+  60          */
+  61          //pwm值预设
+  62          uchar push_left_pwm_value=0;
+  63          uchar push_right_pwm_value=0;
+  64          //左右电机pwm配置
+  65          uchar left_pwm_value=0;
+  66          uchar right_pwm_value=0;
+  67          uchar a,b;
+  68          uint successful;//超声波模块高电平输出成功
+  69          uint US_OK;//可以进行超声波测距
+  70          uint count;//定时器溢出的次数
+  71          uint count1;//定时器1溢出的次数
+  72          uint time;//echo输出的高电平持续的时间
+  73          ulong distance;//超声波模块距离
+  74          uint bai,shi,ge;
+  75          uchar code table[]="0123456789";
+  76          uchar code tips[]="DISTANCE:";
+  77          
+  78          //延时函数
+  79          void delayms(uint time){
+  80   1        uint x,y;
+  81   1        for(x=time;x>0;x--)
+  82   1           for(y=114;y>0;y--);
+  83   1      }
+  84          //启动超声波模块
+  85          void USModule_start(){
+  86   1        trig=1;
+  87   1        //delay_20us();//延时20us
+  88   1           _nop_(); 
+  89   1          _nop_(); 
+  90   1          _nop_(); 
+  91   1          _nop_(); 
+  92   1          _nop_(); 
+  93   1          _nop_(); 
+  94   1          _nop_(); 
+  95   1          _nop_(); 
+  96   1          _nop_(); 
+  97   1          _nop_(); 
+  98   1          _nop_(); 
+  99   1          _nop_(); 
+ 100   1          _nop_(); 
+ 101   1          _nop_(); 
+ 102   1          _nop_(); 
+ 103   1          _nop_(); 
+ 104   1          _nop_();
+ 105   1          _nop_(); 
+ 106   1          _nop_(); 
+ 107   1          _nop_(); 
+ 108   1          _nop_();
+ 109   1          trig=0;
+ 110   1      }
+ 111          //超声波模块初始化
+ 112          void USModule_init(){
+ 113   1        //trig echo都拉低电平
+ 114   1        trig=0;
+ 115   1        echo=0;
+C51 COMPILER V9.00   SMCAR                                                                 11/30/2016 21:32:51 PAGE 3   
+
+ 116   1      }
+ 117          //定时器1初始化
+ 118          void timer0_init(){
+ 119   1        TH0=0;
+ 120   1        TL0=0;
+ 121   1        ET0=1;
+ 122   1      }
+ 123          //lcd1602初始化
+ 124          void lcd_init(){
+ 125   1        dula=0;
+ 126   1        wela=0;
+ 127   1        lcden=0;
+ 128   1        lcdrw=0;
+ 129   1        write_com(0x38);
+ 130   1        write_com(0x0c);
+ 131   1        write_com(0x06);
+ 132   1        write_com(0x01);
+ 133   1      }
+ 134          //1602写命令
+ 135          void write_com(uchar com){
+ 136   1        lcdrs=0;
+ 137   1        //ledrw=0;
+ 138   1        P0=com;
+ 139   1        delayms(5);
+ 140   1        lcden=1;
+ 141   1        delayms(5);
+ 142   1        lcden=0;
+ 143   1      }
+ 144          //1602写数据
+ 145          void write_data(uchar dat){
+ 146   1        lcdrs=1;
+ 147   1        //ledrw=0;
+ 148   1        P0=dat;
+ 149   1        delayms(5);
+ 150   1        lcden=1;
+ 151   1        delayms(5);
+ 152   1        lcden=0;
+ 153   1      }
+ 154          //1602初显示
+ 155          void lcd_show(){
+ 156   1        uint num;
+ 157   1        write_com(0x80);
+ 158   1        for(num=0;num<9;num++){
+ 159   2          write_data(tips[num]);
+ 160   2          delayms(5);
+ 161   2        }
+ 162   1      }
+ 163          //根据串口发送的数据控制电机
+ 164          void Motors_Handler(){
+ 165   1        ConfigUART(9600);
+ 166   1        //while(!RI);
+ 167   1          //RI=0;
+ 168   1      
+ 169   1          b=SBUF;
+ 170   1          //a=b;
+ 171   1          //SBUF=a;
+ 172   1          switch(b){
+ 173   2            //1，Ascii码为31，对应的十进制数为49
+ 174   2            //按下前进发送A,B,C对应低速、中速、高速
+ 175   2            //前进
+ 176   2            case 65:
+ 177   2              //相应的操作
+C51 COMPILER V9.00   SMCAR                                                                 11/30/2016 21:32:51 PAGE 4   
+
+ 178   2              left_motor_go();
+ 179   2              right_motor_go();
+ 180   2              break;
+ 181   2            //后退
+ 182   2            case 68:
+ 183   2              left_motor_back();
+ 184   2              right_motor_back();
+ 185   2              break;
+ 186   2            //左转(原地左转圈)
+ 187   2            case 67:
+ 188   2              left_motor_stop();
+ 189   2              right_motor_go();
+ 190   2              break;
+ 191   2            //右转(原地右转圈)
+ 192   2            case 66:
+ 193   2              left_motor_go();
+ 194   2              right_motor_stop();
+ 195   2              break;
+ 196   2            //停止
+ 197   2            case 83:
+ 198   2              left_motor_stop();
+ 199   2              right_motor_stop();
+ 200   2              break;
+ 201   2          }
+ 202   1          //while(!TI);
+ 203   1          //TI=0;
+ 204   1      }
+ 205          //产生波特率9600
+ 206          void ConfigUART(uint baud){
+ 207   1        SCON=0x50;
+ 208   1        TH1=256-(11059200/12/32)/baud;
+ 209   1        TL1=TH1;
+ 210   1        TR1=1;//启动定时器1
+ 211   1      }
+ 212          //左轮前进
+ 213          void left_motor_go(){
+ 214   1        int1=1;
+ 215   1        int2=0;
+ 216   1      }
+ 217          //左轮后退
+ 218          void left_motor_back(){
+ 219   1        int1=0;
+ 220   1        int2=1;
+ 221   1      }
+ 222          //左轮停止
+ 223          void left_motor_stop(){
+ 224   1        int1=0;
+ 225   1        int2=0;
+ 226   1      }
+ 227          //右轮前进
+ 228          void right_motor_go(){
+ 229   1        int3=1;
+ 230   1        int4=0;
+ 231   1      }
+ 232          //右轮后退
+ 233          void right_motor_back(){
+ 234   1        int3=0;
+ 235   1        int4=1;
+ 236   1      }
+ 237          //右轮停止
+ 238          void right_motor_stop(){
+ 239   1        int3=0;
+C51 COMPILER V9.00   SMCAR                                                                 11/30/2016 21:32:51 PAGE 5   
+
+ 240   1        int4=0;
+ 241   1      }
+ 242          //超声波模块处理
+ 243          void USModule_Handler(){
+ 244   1        lcd_show();//lcd初显示
+ 245   1        USModule_start();
+ 246   1        while(!echo);//等待高电平来临，启动计时器
+ 247   1        TR0=1;
+ 248   1        while(echo);//等待高电平结束，关闭计时器
+ 249   1        TR0=0;
+ 250   1        successful=1;//高电平输出完成，成功
+ 251   1        time=TH0*256+TL0;//读出计时器中的值来计算距离
+ 252   1        //重新装入初值，计数
+ 253   1        TH0=0;
+ 254   1        TL0=0;
+ 255   1        distance=(time*1.7)/100;//单位是厘米
+ 256   1        if(distance>700 || successful==0){
+ 257   2          distance=0;//不接收数据
+ 258   2        }
+ 259   1        if(distance<=10){
+ 260   2            feng=0;
+ 261   2            left_motor_stop();
+ 262   2            right_motor_stop();
+ 263   2            delayms(1000);//遇到障碍时候延迟一秒，然后选择向右转弯
+ 264   2            left_motor_go();
+ 265   2            right_motor_stop();
+ 266   2          }else{
+ 267   2            feng=1;
+ 268   2          }
+ 269   1          bai=distance/100;
+ 270   1          shi=distance%100/10;
+ 271   1          ge=distance%100%10;
+ 272   1          write_data(table[bai]);
+ 273   1          write_data(table[shi]);
+ 274   1          write_data(table[ge]);
+ 275   1          write_data(' ');
+ 276   1          write_data('c');
+ 277   1          write_data('m');
+ 278   1          delayms(10);//延时10ms再进行下次测距
+ 279   1          
+ 280   1      }
+ 281          void timer2_start(){
+ 282   1        //启动定时器2
+ 283   1        RCAP2H=(65536-1000)/256;//1ms产生一次溢出中断,用来产生pwm波
+ 284   1        RCAP2L=(65536-1000)%256;
+ 285   1        T2CON=0;
+ 286   1        ET2=1;
+ 287   1        TR2=1;
+ 288   1      }
+ 289          //主程序
+ 290          void main(){
+ 291   1        TMOD=0x21;//定时器0和1都使用
+ 292   1        EA=1;
+ 293   1        timer0_init();
+ 294   1        //lcd_init();
+ 295   1        //successful=0;
+ 296   1        //USModule_init();
+ 297   1        timer2_start();
+ 298   1        push_left_pwm_value=9;
+ 299   1        push_right_pwm_value=9;
+ 300   1        while(1){
+ 301   2          Motors_Handler();//处理电机模块
+C51 COMPILER V9.00   SMCAR                                                                 11/30/2016 21:32:51 PAGE 6   
+
+ 302   2          //USModule_Handler();//处理超声波模块
+ 303   2        }
+ 304   1      }
+ 305          void timer2() interrupt 5{
+ 306   1        TF2=0;
+ 307   1        //产生pwm波
+ 308   1        //left
+ 309   1        left_pwm_value++;
+ 310   1        right_pwm_value++;
+ 311   1        if(left_pwm_value<=push_left_pwm_value){
+ 312   2          left_motor_pwm_port=1;
+ 313   2        }else{
+ 314   2          left_motor_pwm_port=0;
+ 315   2        }
+ 316   1        if(left_pwm_value==10){
+ 317   2          left_pwm_value=0;
+ 318   2        }
+ 319   1        //right
+ 320   1        if(right_pwm_value<=push_right_pwm_value){
+ 321   2          right_motor_pwm_port=1;
+ 322   2        }else{
+ 323   2          right_motor_pwm_port=0;
+ 324   2        }
+ 325   1        if(right_pwm_value==10){
+ 326   2          right_pwm_value=0;
+ 327   2        }
+ 328   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    682    ----
+   CONSTANT SIZE    =     21    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     26    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

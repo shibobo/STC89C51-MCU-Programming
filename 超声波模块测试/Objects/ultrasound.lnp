@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\ultrasound.obj" 
+TO ".\Objects\ultrasound" 
+PRINT(".\Listings\ultrasound.m51") RAMSIZE(256) 

@@ -1,0 +1,60 @@
+C51 COMPILER V9.00   TEST                                                                  11/03/2016 20:32:12 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE TEST
+OBJECT MODULE PLACED IN .\Objects\test.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE test.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\test.lst) TABS(2) OBJECT(.\Objects\test.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF TEST.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include "myreg52.h"
+   2          #include <intrins.h>
+   3          #define uchar unsigned char
+   4          #define uint unsigned int
+   5          uchar count,count1;
+   6          sbit led4=P1^4;
+   7          sbit led5=P1^5;
+   8          //Ö÷³ÌÐò
+   9          void main(){
+  10   1        TMOD=0x01;
+  11   1        TH0=(65536-50000)/256;
+  12   1        TL0=(65536-50000)%256;
+  13   1        EA=1;
+  14   1        ET0=1;
+  15   1        TR0=1;
+  16   1        while(1){
+  17   2          if(count==50){
+  18   3            count=0;
+  19   3            led4=~led4;
+  20   3          }
+  21   2          if(count1==50){
+  22   3            count1=0;
+  23   3            led5=~led5;
+  24   3          }
+  25   2        }
+  26   1        
+  27   1      }
+  28          void timer0() interrupt 1{
+  29   1        //TF2=0;
+  30   1        TH0=(65536-10)/256;
+  31   1        TL0=(65536-10)%256;
+  32   1        count++;
+  33   1        count1++;
+  34   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     48    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

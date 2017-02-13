@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\xunji.obj" 
+TO ".\Objects\xunji" 
+PRINT(".\Listings\xunji.m51") RAMSIZE(256) 

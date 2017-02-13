@@ -1,0 +1,171 @@
+C51 COMPILER V9.00   UART                                                                  12/08/2016 09:09:59 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\uart.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE uart.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\uart.lst) TABS(2) OBJECT(.\Objects\uart.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF UART.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          #define uchar unsigned char
+   5          #define uint unsigned int
+   6          uint flag_rec,b,data_rec;
+   7          
+   8          void initUART(){
+   9   1        TMOD=0x20;
+  10   1        SCON=0x50;
+  11   1        TH1=0xfd;
+  12   1        TL1=0xfd;
+  13   1        TR1=1;
+  14   1        SM0=0;
+  15   1        SM1=1;
+  16   1        REN=1;
+  17   1        EA=1;
+  18   1        ES=1;
+  19   1      }
+  20          
+  21          void main(){
+  22   1        initUART();
+  23   1        while(1){   
+  24   2          //debug
+  25   2          if(flag_rec==1){
+  26   3            flag_rec=0;
+  27   3            ES=0;
+  28   3            TI=1;
+  29   3            switch(data_rec){
+  30   4              case 65:
+  31   4                //left_motor_go();
+  32   4                //right_motor_go();
+  33   4                puts("go ahead");
+  34   4                break;
+  35   4              case 68:
+  36   4                //left_motor_back();
+  37   4                //right_motor_back();
+  38   4                puts("go back");
+  39   4                break;
+  40   4              case 67:
+  41   4                //left_motor_stop();
+  42   4                //right_motor_go();
+  43   4                puts("go left");
+  44   4                break;
+  45   4              case 66:
+  46   4                //left_motor_go();
+  47   4                //right_motor_stop();
+  48   4                puts("go right");
+  49   4                break;
+  50   4              case 0:
+  51   4                puts("fuck");
+  52   4                break;
+  53   4            }
+C51 COMPILER V9.00   UART                                                                  12/08/2016 09:09:59 PAGE 2   
+
+  54   3            while(!TI);
+  55   3            TI=0;
+  56   3            ES=1;
+  57   3          }  
+  58   2        }
+  59   1      }
+  60          void uartint() interrupt 4{
+  61   1          //light=~light;
+  62   1        //if(RI){
+  63   1            RI=0;
+  64   1            b=SBUF;
+  65   1            flag_rec=1;
+  66   1            if(b==65){
+  67   2              data_rec=65;
+  68   2            }else if(b==66){
+  69   2              data_rec=66;
+  70   2            }else if(b==67){
+  71   2              data_rec=67;
+  72   2            }else if(b==68){
+  73   2              data_rec=68;
+  74   2            }else{
+  75   2              data_rec=0;
+  76   2            }
+  77   1        //}
+  78   1      }
+  79          /*#include <reg52.h>
+  80          #include <intrins.h>
+  81          #include <stdio.h>
+  82          #include <stdlib.h>
+  83          #define uint unsigned int
+  84          #define uchar unsigned char
+  85          sbit dula=P2^6;
+  86          sbit wela=P2^7;
+  87          uchar flag,a;
+  88          uchar t0num;
+  89          float ad_vo,ad_val;
+  90          uchar flag_uart,flag_on,flag_time;
+  91          void init(){
+  92            TMOD=0x21;
+  93            SCON=0x50;
+  94            TH0=(65536-50000)/256;
+  95            TL0=(65536-50000)%256;
+  96            TH1=0xfd;
+  97            TL1=0xfd;
+  98            TR1=1;
+  99            ET0=1;
+ 100            SM0=0;
+ 101            SM1=1;
+ 102            REN=1;
+ 103            EA=1;
+ 104            ES=1;
+ 105          }
+ 106          void main(){
+ 107            init();
+ 108            while(1){
+ 109              if(flag_uart==1){
+ 110                flag_uart=0;
+ 111                ES=0;
+ 112                TI=1;
+ 113                switch(flag_on){
+ 114                  case 0:
+ 115                    puts("turn on ad");
+C51 COMPILER V9.00   UART                                                                  12/08/2016 09:09:59 PAGE 3   
+
+ 116                    break;
+ 117                  case 1:
+ 118                    printf("turn off ad");
+ 119                    break;
+ 120                  case 2:
+ 121                    puts("error!");
+ 122                    break;
+ 123                }
+ 124                while(!TI);
+ 125                TI=0;
+ 126                ES=1;
+ 127              }
+ 128            }
+ 129          }
+ 130          void ser() interrupt 4{
+ 131            RI=0;
+ 132            a=SBUF;
+ 133            flag_uart=1;
+ 134            if(a==48){
+ 135              flag_on=0;
+ 136            }else if(a==49){
+ 137              flag_on=1;
+ 138            }else{
+ 139              flag_on=2;
+ 140            }
+ 141          }*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    213    ----
+   CONSTANT SIZE    =     39    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

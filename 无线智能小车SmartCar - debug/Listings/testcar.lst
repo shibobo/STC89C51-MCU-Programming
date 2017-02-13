@@ -1,0 +1,501 @@
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE TESTCAR
+OBJECT MODULE PLACED IN .\Objects\testcar.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE testcar.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(
+                    -.\Listings\testcar.lst) TABS(2) OBJECT(.\Objects\testcar.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF TESTCAR.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          #define uchar unsigned char
+   5          #define uint unsigned int
+   6          #define ulong unsigned long
+   7          #define kp 1
+   8          #define ki 0.5
+   9          #define kd 0
+  10          sfr T2MOD=0xc9;
+  11          /**
+  12          *port define
+  13          */
+  14          //P1^6=ENA,P1^7=ENB
+  15          sbit left_motor_pwm_port=P1^6;
+  16          sbit right_motor_pwm_port=P1^7;
+  17          //left motor
+  18          sbit int1=P1^0;
+  19          sbit int2=P1^1;
+  20          //right motor
+  21          sbit int3=P1^2;
+  22          sbit int4=P1^3;
+  23          //lcd1602 display
+  24          sbit lcden=P3^4;//EN
+  25          sbit lcdrs=P3^5;//RS
+  26          sbit lcdrw=P3^6;//RW
+  27          //feng
+  28          sbit feng=P0^0;
+  29          //sbit feng=P2^3;
+  30          sbit light1=P1^0;
+  31          sbit light2=P1^1;
+  32          //ultrasound
+  33          sbit trig=P0^4;
+  34          sbit echo=P0^5;
+  35          /**
+  36          *function lists
+  37          */
+  38          void delayms(uint time);
+  39          void USModule_start();
+  40          void display(uchar dis);
+  41          void calculate_distance();
+  42          void USModule_init();
+  43          void timer0_init();
+  44          void lcd_init();
+  45          void write_com(uchar com);
+  46          void write_data(uchar dat);
+  47          void lcd_show();
+  48          void Motors_Handler();
+  49          void USMOdule_Handler();
+  50          //uart generator
+  51          void ConfigUART(uint baud);
+  52          //motor status
+  53          void left_motor_go();
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 2   
+
+  54          void left_motor_back();
+  55          void left_motor_stop();
+  56          
+  57          void right_motor_go(); 
+  58          void right_motor_back();
+  59          void right_motor_stop(); 
+  60          void timer2_start();
+  61          void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1,uint qian,uint bai,uint shi,uin
+             -t ge);
+  62          /**
+  63          *variable lists
+  64          */
+  65          uchar left_pwm_value,right_pwm_value;
+  66          uchar push_left_pwm_value,push_right_pwm_value;
+  67          
+  68          uchar a,b;
+  69          uint count;//定时器溢出的次数
+  70          uint count1;//定时器1溢出的次数
+  71          uint time;//echo输出的高电平持续的时间
+  72          ulong distance;//小车前进距离
+  73          uint qian,bai,shi,ge;
+  74          uchar code table[]="0123456789-";
+  75          uchar code tips[]="DISTANCE:";
+  76          //电机速度
+  77          uint temp0,bai0,shi0,ge0,n0,count;
+  78          uint temp1,bai1,shi1,ge1,n1;
+  79          sbit outint0=P3^2;//outside interrupt 0
+  80          sbit outint1=P3^3;//outside interrupt 1
+  81          sbit leden=P3^4;//1602 EN
+  82          sbit ledrs=P3^5;//1602 RS
+  83          sbit ledrw=P3^6;//1602 RW
+  84          uint flag_rec,data_rec,flag_v;
+  85          uint count_dis;
+  86          //delayms
+  87          void delayms(uint time){
+  88   1        uint x,y;
+  89   1        for(x=time;x>0;x--)
+  90   1           for(y=114;y>0;y--);
+  91   1      }
+  92          //lcd1602初始化
+  93          void lcd_init(){
+  94   1        lcden=0;
+  95   1        lcdrw=0;
+  96   1        P2=0x00;
+  97   1        write_com(0x38);
+  98   1        write_com(0x0c);
+  99   1        write_com(0x06);
+ 100   1        write_com(0x01);
+ 101   1        
+ 102   1        write_com(0x80);
+ 103   1        write_data('R');
+ 104   1        write_data(':');
+ 105   1        write_data(table[10]);
+ 106   1        write_data(table[10]);
+ 107   1        write_data(table[10]);
+ 108   1        write_data('r');
+ 109   1        write_data('p');
+ 110   1        write_data('m');
+ 111   1        
+ 112   1        write_com(0x80+0x08);
+ 113   1        write_data('L');
+ 114   1        write_data(':');
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 3   
+
+ 115   1        write_data(table[10]);
+ 116   1        write_data(table[10]);
+ 117   1        write_data(table[10]);
+ 118   1        write_data('r');
+ 119   1        write_data('p');
+ 120   1        write_data('m');
+ 121   1        
+ 122   1        write_com(0x80+0x40);
+ 123   1        write_data('D');
+ 124   1        write_data('I');
+ 125   1        write_data('S');
+ 126   1        write_data(':');
+ 127   1        write_data(table[10]);
+ 128   1        write_data(table[10]);
+ 129   1        write_data(table[10]);
+ 130   1        write_data(table[10]);
+ 131   1        write_data('c');
+ 132   1        write_data('m');
+ 133   1      }
+ 134          //1602写命令
+ 135          void write_com(uchar com){
+ 136   1        lcdrs=0;
+ 137   1        //ledrw=0;
+ 138   1        P2=com;
+ 139   1        delayms(5);
+ 140   1        lcden=1;
+ 141   1        delayms(5);
+ 142   1        lcden=0;
+ 143   1      }
+ 144          //1602写数据
+ 145          void write_data(uchar dat){
+ 146   1        lcdrs=1;
+ 147   1        //ledrw=0;
+ 148   1        P2=dat;
+ 149   1        delayms(5);
+ 150   1        lcden=1;
+ 151   1        delayms(5);
+ 152   1        lcden=0;
+ 153   1      }
+ 154          //左轮前进
+ 155          void left_motor_go(){
+ 156   1        int1=1;
+ 157   1        int2=0;
+ 158   1      }
+ 159          //左轮后退
+ 160          void left_motor_back(){
+ 161   1        int1=0;
+ 162   1        int2=1;
+ 163   1      }
+ 164          //左轮停止
+ 165          void left_motor_stop(){
+ 166   1        int1=0;
+ 167   1        int2=0;
+ 168   1      }
+ 169          //右轮前进
+ 170          void right_motor_go(){
+ 171   1        int3=1;
+ 172   1        int4=0;
+ 173   1      }
+ 174          //右轮后退
+ 175          void right_motor_back(){
+ 176   1        int3=0;
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 4   
+
+ 177   1        int4=1;
+ 178   1      }
+ 179          //右轮停止
+ 180          void right_motor_stop(){
+ 181   1        int3=0;
+ 182   1        int4=0;
+ 183   1      }
+ 184          //lcd1602显示转速
+ 185          void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1,uint qian,uint bai,uint shi,uin
+             -t ge){
+ 186   1        P2=0x00;
+ 187   1        write_com(0x82);
+ 188   1        write_data(table[bai0]);
+ 189   1        write_data(table[shi0]);
+ 190   1        write_data(table[ge0]);
+ 191   1        
+ 192   1        write_com(0x80+0x0A);
+ 193   1        write_data(table[bai1]);
+ 194   1        write_data(table[shi1]);
+ 195   1        write_data(table[ge1]);
+ 196   1        
+ 197   1        write_com(0x80+0x44);
+ 198   1        write_data(table[qian]);
+ 199   1        write_data(table[bai]);
+ 200   1        write_data(table[shi]);
+ 201   1        write_data(table[ge]);
+ 202   1      }
+ 203          void timer0_start(){
+ 204   1        TMOD=0x21;//timer0 count to speed, timer1 to UART
+ 205   1        TH0=(65536-50000)/256;//50ms
+ 206   1        TL0=(65536-50000)%256;//50ms
+ 207   1        EA=1;
+ 208   1        ET0=1;
+ 209   1        TR0=1;
+ 210   1      }
+ 211          void timer2_start(){
+ 212   1        T2MOD=0;
+ 213   1        T2CON=0;
+ 214   1        RCAP2H=(65536-100)/256;//0.1ms
+ 215   1        RCAP2L=(65536-100)%256;
+ 216   1        TH2=RCAP2H;
+ 217   1        TL2=RCAP2L;
+ 218   1        //T2CON=0;
+ 219   1        TF2=0;
+ 220   1        ET2=1;
+ 221   1        EA=1;
+ 222   1        TR2=1;
+ 223   1      }
+ 224          void initUART(){
+ 225   1        //TMOD=0x21;//单独调试串口模块的时候需要加
+ 226   1        SCON=0x50;
+ 227   1        TH1=0xfd;
+ 228   1        TL1=0xfd;
+ 229   1        TR1=1;
+ 230   1        SM0=0;
+ 231   1        SM1=1;
+ 232   1        REN=1;
+ 233   1        EA=1;
+ 234   1        ES=1;
+ 235   1      }
+ 236          void outint_start(){
+ 237   1        IE0=0;
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 5   
+
+ 238   1        EX0=1;
+ 239   1        IT0=1;
+ 240   1        EA=1;
+ 241   1        
+ 242   1        IE1=0;
+ 243   1        EX1=1;
+ 244   1        IT1=1;
+ 245   1        EA=1;
+ 246   1      }
+ 247          //pid control the speed
+ 248          float pid_controller(float vset,float vreal){
+ 249   1        float pwmvalue;
+ 250   1        float ee,eeold;
+ 251   1        float P,I,D;
+ 252   1        eeold=ee;
+ 253   1        ee=vset-vreal;
+ 254   1        P=ee;
+ 255   1        I=I+ee;
+ 256   1        D=ee-eeold;
+ 257   1        pwmvalue=kp*P+ki*I+kd*D;
+ 258   1        return pwmvalue;
+ 259   1      }
+ 260          void set_accurate_speed(uchar svalue){
+ 261   1        push_left_pwm_value=pid_controller(svalue,temp0);
+ 262   1        if(push_left_pwm_value>=100){
+ 263   2          push_left_pwm_value=100;
+ 264   2        }else if(push_left_pwm_value<=0){
+ 265   2          push_left_pwm_value=0;
+ 266   2        }
+ 267   1      }
+ 268          void main(){
+ 269   1        timer2_start();//generate pwm
+ 270   1        timer0_start();//measure speed
+ 271   1        lcd_init();
+ 272   1        initUART();
+ 273   1        push_left_pwm_value=100;
+ 274   1        push_right_pwm_value=100;
+ 275   1        outint_start();//外部中断有问题，加入外部中断之后电机就不转动了
+ 276   1        //left_motor_go();
+ 277   1        //right_motor_go();
+ 278   1        while(1){   
+ 279   2          //debug
+ 280   2          if(flag_rec==1){
+ 281   3            flag_rec=0;
+ 282   3            ES=0;
+ 283   3            TI=1;
+ 284   3            switch(data_rec){
+ 285   4              //High speed
+ 286   4              case 65:
+ 287   4                push_left_pwm_value=100;
+ 288   4                push_left_pwm_value=100;
+ 289   4                left_motor_go();
+ 290   4                right_motor_go();
+ 291   4                puts("ahead fast");
+ 292   4                break;
+ 293   4              //Slow speed
+ 294   4              case 97:
+ 295   4                push_left_pwm_value=50;
+ 296   4                push_left_pwm_value=50;
+ 297   4                left_motor_go();
+ 298   4                right_motor_go();
+ 299   4                puts("ahead slow");
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 6   
+
+ 300   4                break;
+ 301   4              
+ 302   4              
+ 303   4              case 68:
+ 304   4                push_left_pwm_value=100;
+ 305   4                push_left_pwm_value=100;
+ 306   4                left_motor_back();
+ 307   4                right_motor_back();
+ 308   4                puts("back fast");
+ 309   4                break;
+ 310   4              case 100:
+ 311   4                push_left_pwm_value=50;
+ 312   4                push_left_pwm_value=50;
+ 313   4                left_motor_back();
+ 314   4                right_motor_back();
+ 315   4                puts("back slow");
+ 316   4                break;
+ 317   4              
+ 318   4              
+ 319   4              case 67:
+ 320   4                push_left_pwm_value=100;
+ 321   4                push_left_pwm_value=100;
+ 322   4                left_motor_stop();
+ 323   4                right_motor_go();
+ 324   4                puts("left fast");
+ 325   4                break;
+ 326   4              case 99:
+ 327   4                push_left_pwm_value=50;
+ 328   4                push_left_pwm_value=50;
+ 329   4                left_motor_stop();
+ 330   4                right_motor_go();
+ 331   4                puts("left slow");
+ 332   4                break;
+ 333   4              
+ 334   4              
+ 335   4              case 66:
+ 336   4                push_left_pwm_value=100;
+ 337   4                push_left_pwm_value=100;
+ 338   4                left_motor_go();
+ 339   4                right_motor_stop();
+ 340   4                puts("right fast");
+ 341   4                break;
+ 342   4              case 98:
+ 343   4                push_left_pwm_value=50;
+ 344   4                push_left_pwm_value=50;
+ 345   4                left_motor_go();
+ 346   4                right_motor_stop();
+ 347   4                puts("right slow");
+ 348   4                break;
+ 349   4              
+ 350   4              
+ 351   4              //stop
+ 352   4              case 83:
+ 353   4                left_motor_stop();
+ 354   4                right_motor_stop();
+ 355   4                puts("stop");
+ 356   4                break;
+ 357   4              case 0:
+ 358   4                puts("error");
+ 359   4                break;
+ 360   4            }
+ 361   3            while(!TI);
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 7   
+
+ 362   3            TI=0;
+ 363   3            ES=1;
+ 364   3          }
+ 365   2        }
+ 366   1      }
+ 367          //外部中断0
+ 368          void out0() interrupt 0{
+ 369   1        EX0=0;
+ 370   1        n0++;
+ 371   1        EX0=1;
+ 372   1      }
+ 373          //外部中断1
+ 374          void out1() interrupt 2{
+ 375   1        EX1=0;
+ 376   1        n1++;
+ 377   1        EX1=1;
+ 378   1      }
+ 379          void uartint() interrupt 4{
+ 380   1        ES=0;
+ 381   1        if(RI){
+ 382   2          RI=0;
+ 383   2          flag_rec=1;
+ 384   2          data_rec=SBUF;
+ 385   2        }
+ 386   1        ES=1;
+ 387   1      }
+ 388          void timer0() interrupt 1{
+ 389   1        TH0=(65536-50000)/256;
+ 390   1        TL0=(65536-80000)%256;
+ 391   1        count++;
+ 392   1        if(count==20){
+ 393   2          count=0;
+ 394   2          temp0=5*n0;
+ 395   2          n0=0;
+ 396   2          temp1=5*n1;
+ 397   2          n1=0;
+ 398   2          
+ 399   2          if(temp0>=temp1){
+ 400   3            distance+=temp1/60*2*3.14*3.2;
+ 401   3            if(distance%100==0 && distance>0){
+ 402   4              feng=0;
+ 403   4              delayms(1000);
+ 404   4              feng=1;
+ 405   4            }
+ 406   3            if(distance>=9999){
+ 407   4              distance=0;
+ 408   4            }
+ 409   3          }else{
+ 410   3            distance+=temp0/60*2*3.14*3.2;
+ 411   3            if(distance%100==0 && distance>0){
+ 412   4              feng=0;
+ 413   4              delayms(1000);
+ 414   4              feng=1;
+ 415   4            }
+ 416   3            if(distance>=9999){
+ 417   4              distance=0;
+ 418   4            }
+ 419   3          }
+ 420   2          
+ 421   2          bai0=temp0/100;
+ 422   2          shi0=temp0%100/10;
+ 423   2          ge0=temp0%10;
+C51 COMPILER V9.00   TESTCAR                                                               01/09/2017 15:40:45 PAGE 8   
+
+ 424   2          bai1=temp1/100;
+ 425   2          shi1=temp1%100/10;
+ 426   2          ge1=temp1%10;
+ 427   2          
+ 428   2          qian=distance/1000;
+ 429   2          bai=distance%1000/100;
+ 430   2          shi=distance%1000%100/10;
+ 431   2          ge=distance%10;
+ 432   2          
+ 433   2          display1602(bai0,shi0,ge0,bai1,shi1,ge1,qian,bai,shi,ge);
+ 434   2        }
+ 435   1      }
+ 436          
+ 437          void timer2() interrupt 5{
+ 438   1        TF2=0;
+ 439   1        //left
+ 440   1        left_pwm_value++;
+ 441   1        right_pwm_value++;
+ 442   1        if(left_pwm_value<=push_left_pwm_value){
+ 443   2          left_motor_pwm_port=1;
+ 444   2        }else{
+ 445   2          left_motor_pwm_port=0;
+ 446   2        }
+ 447   1        if(left_pwm_value==100){
+ 448   2          left_pwm_value=0;
+ 449   2        }
+ 450   1        //right
+ 451   1        if(right_pwm_value<=push_right_pwm_value){
+ 452   2          right_motor_pwm_port=1;
+ 453   2        }else{
+ 454   2          right_motor_pwm_port=0;
+ 455   2        }
+ 456   1        if(right_pwm_value==100){
+ 457   2          right_pwm_value=0;
+ 458   2        }
+ 459   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1789    ----
+   CONSTANT SIZE    =    117    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     52      48
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

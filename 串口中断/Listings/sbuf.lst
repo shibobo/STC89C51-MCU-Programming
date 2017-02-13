@@ -1,0 +1,80 @@
+C51 COMPILER V9.00   SBUF                                                                  11/17/2016 20:22:04 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE SBUF
+OBJECT MODULE PLACED IN .\Objects\sbuf.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE sbuf.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\L
+                    -istings\sbuf.lst) TABS(2) OBJECT(.\Objects\sbuf.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF SBUF.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #define uint unsigned int
+   3          #define uchar unsigned char
+   4          uchar flag;//接收完成标志位
+   5          uchar msg_r[3];//收到的消息
+   6          uchar rec;
+   7          uchar i;
+   8          uchar code msg[]="i get ";//消息主体
+   9          void init(){
+  10   1        TMOD=0x20;
+  11   1        TH1=0xfd;
+  12   1        TL1=0xfd;
+  13   1        TR1=1;
+  14   1        SM0=1;
+  15   1        SM1=1;
+  16   1        REN=1;
+  17   1        EA=1;
+  18   1        ES=1;//打开串口中断
+  19   1      }
+  20          void main(){
+  21   1        init();
+  22   1        msg_r[0]='b';
+  23   1        msg_r[1]='e';
+  24   1        msg_r[2]='a';
+  25   1        while(1){
+  26   2          //判断是否接收数据完成
+  27   2          if(flag==1){
+  28   3            ES=0;//关闭串口中断
+  29   3            //先输出固定部分
+  30   3            for(i=0;i<6;i++){
+  31   4              SBUF=msg[i];
+  32   4              while(!TI);
+  33   4              TI=0;
+  34   4            }
+  35   3            for(i=0;i<3;i++){
+  36   4              SBUF=msg_r[i];
+  37   4              while(!TI);
+  38   4              TI=0;
+  39   4            }
+  40   3            SBUF=rec;
+  41   3            while(!TI);
+  42   3            TI=0;
+  43   3            ES=1;//重新打开串口中断
+  44   3            flag=0;
+  45   3          }     
+  46   2        }
+  47   1      }
+  48          void serial() interrupt 4{
+  49   1        RI=0;
+  50   1        rec=SBUF;//接收数据
+  51   1        flag=1; 
+  52   1      }
+
+C51 COMPILER V9.00   SBUF                                                                  11/17/2016 20:22:04 PAGE 2   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    111    ----
+   CONSTANT SIZE    =      7    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

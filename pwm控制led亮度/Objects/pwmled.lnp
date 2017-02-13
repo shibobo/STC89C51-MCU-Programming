@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\pwmled.obj" 
+TO ".\Objects\pwmled" 
+PRINT(".\Listings\pwmled.m51") RAMSIZE(256) 

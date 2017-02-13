@@ -1,0 +1,143 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        11/18/2016  13:29:44  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+D:\PROGRAM FILES\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\xunji.obj TO .\Objects\xunji PRINT (.\Listings\
+>> xunji.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\xunji.obj (XUNJI)
+
+
+LINK MAP OF MODULE:  .\Objects\xunji (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     0026H     UNIT         ?PR?MAIN?XUNJI
+            CODE    0826H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\xunji (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?XUNJI
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\xunji (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0826H         SEGMENT       ?C_C51STARTUP
+  I:0008H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/18/2016  13:29:44  PAGE 2
+
+
+  C:0829H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0826H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0826H         LINE#         133
+  C:0828H         LINE#         134
+  C:0829H         LINE#         135
+  C:082AH         LINE#         136
+  C:082CH         LINE#         185
+  C:082FH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        XUNJI
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  B:0080H.0       PUBLIC        out1
+  B:0080H.1       PUBLIC        out2
+  B:0080H.2       PUBLIC        out3
+  B:0080H.3       PUBLIC        out4
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0800H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:0090H.0       PUBLIC        led1
+  D:00C8H         PUBLIC        T2CON
+  B:0090H.1       PUBLIC        led2
+  B:0090H.2       PUBLIC        led3
+  B:0090H.3       PUBLIC        led4
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:0800H         LINE#         13
+  C:0800H         LINE#         16
+  C:0800H         LINE#         17
+  C:0803H         LINE#         18
+  C:0805H         LINE#         19
+  C:0807H         LINE#         20
+  C:0809H         LINE#         21
+  C:0809H         LINE#         22
+  C:080CH         LINE#         23
+  C:080EH         LINE#         24
+  C:0810H         LINE#         25
+  C:0812H         LINE#         26
+  C:0812H         LINE#         27
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/18/2016  13:29:44  PAGE 3
+
+
+  C:0815H         LINE#         28
+  C:0817H         LINE#         29
+  C:0819H         LINE#         30
+  C:081BH         LINE#         31
+  C:081BH         LINE#         32
+  C:081EH         LINE#         33
+  C:0820H         LINE#         34
+  C:0822H         LINE#         35
+  C:0824H         LINE#         36
+  C:0824H         LINE#         37
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        XUNJI
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0035H BYTE ( 2%) *
+******************************************************************************
+
+Program Size: data=9.0 xdata=0 code=53
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

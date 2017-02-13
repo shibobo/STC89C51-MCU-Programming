@@ -1,0 +1,342 @@
+C51 COMPILER V9.00   TESTSOUND                                                             01/08/2017 10:39:52 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE TESTSOUND
+OBJECT MODULE PLACED IN .\Objects\testsound.obj
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE testsound.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRIN
+                    -T(.\Listings\testsound.lst) TABS(2) OBJECT(.\Objects\testsound.obj)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF TESTSOUND.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          #include <stdio.h>
+   4          #define uchar unsigned char
+   5          #define uint unsigned int
+   6          #define ulong unsigned long
+   7          #define kp 1
+   8          #define ki 0.5
+   9          #define kd 0
+  10          sfr T2MOD=0xc9;
+  11          /**
+  12          *port define
+  13          */
+  14          //P1^6=ENA,P1^7=ENB
+  15          sbit left_motor_pwm_port=P1^6;
+  16          sbit right_motor_pwm_port=P1^7;
+  17          //left motor
+  18          sbit int1=P1^0;
+  19          sbit int2=P1^1;
+  20          //right motor
+  21          sbit int3=P1^2;
+  22          sbit int4=P1^3;
+  23          //lcd1602 display
+  24          sbit lcden=P3^4;//EN
+  25          sbit lcdrs=P3^5;//RS
+  26          sbit lcdrw=P3^6;//RW
+  27          //feng
+  28          sbit feng=P1^4;
+  29          //sbit feng=P2^3;
+  30          sbit light1=P1^0;
+  31          sbit light2=P1^1;
+  32          //ultrasound
+  33          sbit trig=P0^4;
+  34          sbit echo=P0^5;
+  35          /**
+  36          *function lists
+  37          */
+  38          void delayms(uint time);
+  39          void USModule_start();
+  40          void display(uchar dis);
+  41          void calculate_distance();
+  42          void USModule_init();
+  43          void timer0_init();
+  44          void lcd_init();
+  45          void write_com(uchar com);
+  46          void write_data(uchar dat);
+  47          void lcd_show();
+  48          void Motors_Handler();
+  49          void USMOdule_Handler();
+  50          //uart generator
+  51          void ConfigUART(uint baud);
+  52          //motor status
+  53          void left_motor_go();
+C51 COMPILER V9.00   TESTSOUND                                                             01/08/2017 10:39:52 PAGE 2   
+
+  54          void left_motor_back();
+  55          void left_motor_stop();
+  56          
+  57          void right_motor_go(); 
+  58          void right_motor_back();
+  59          void right_motor_stop(); 
+  60          void timer2_start();
+  61          void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1);
+  62          /**
+  63          *variable lists
+  64          */
+  65          uchar left_pwm_value,right_pwm_value;
+  66          uchar push_left_pwm_value,push_right_pwm_value;
+  67          
+  68          uchar a,b;
+  69          uint count;//定时器溢出的次数
+  70          uint count1;//定时器1溢出的次数
+  71          uint time;//echo输出的高电平持续的时间
+  72          ulong distance;//超声波模块距离
+  73          uint bai,shi,ge;
+  74          uchar code table[]="0123456789-";
+  75          uchar code tips[]="DISTANCE:";
+  76          //电机速度
+  77          uint temp0,bai0,shi0,ge0,n0,count;
+  78          uint temp1,bai1,shi1,ge1,n1;
+  79          sbit outint0=P3^2;//outside interrupt 0
+  80          sbit outint1=P3^3;//outside interrupt 1
+  81          sbit leden=P3^4;//1602 EN
+  82          sbit ledrs=P3^5;//1602 RS
+  83          sbit ledrw=P3^6;//1602 RW
+  84          uint flag_rec,data_rec,flag_v;
+  85          uint count_dis;
+  86          //delayms
+  87          void delayms(uint time){
+  88   1        uint x,y;
+  89   1        for(x=time;x>0;x--)
+  90   1           for(y=114;y>0;y--);
+  91   1      }
+  92          //lcd1602初始化
+  93          void lcd_init(){
+  94   1        lcden=0;
+  95   1        lcdrw=0;
+  96   1        P2=0x00;
+  97   1        write_com(0x38);
+  98   1        write_com(0x0c);
+  99   1        write_com(0x06);
+ 100   1        write_com(0x01);
+ 101   1        
+ 102   1        write_com(0x80);
+ 103   1        write_data('R');
+ 104   1        write_data(':');
+ 105   1        write_data(table[10]);
+ 106   1        write_data(table[10]);
+ 107   1        write_data(table[10]);
+ 108   1        
+ 109   1        write_com(0x80+0x06);
+ 110   1        write_data('L');
+ 111   1        write_data(':');
+ 112   1        write_data(table[10]);
+ 113   1        write_data(table[10]);
+ 114   1        write_data(table[10]);
+ 115   1        
+C51 COMPILER V9.00   TESTSOUND                                                             01/08/2017 10:39:52 PAGE 3   
+
+ 116   1        write_com(0x80+0x40);
+ 117   1        write_data('D');
+ 118   1        write_data('I');
+ 119   1        write_data('S');
+ 120   1        write_data(':');
+ 121   1        write_data(table[10]);
+ 122   1        write_data(table[10]);
+ 123   1        write_data(table[10]);
+ 124   1        write_data('c');
+ 125   1        write_data('m');
+ 126   1      }
+ 127          //1602写命令
+ 128          void write_com(uchar com){
+ 129   1        lcdrs=0;
+ 130   1        //ledrw=0;
+ 131   1        P2=com;
+ 132   1        delayms(5);
+ 133   1        lcden=1;
+ 134   1        delayms(5);
+ 135   1        lcden=0;
+ 136   1      }
+ 137          //1602写数据
+ 138          void write_data(uchar dat){
+ 139   1        lcdrs=1;
+ 140   1        //ledrw=0;
+ 141   1        P2=dat;
+ 142   1        delayms(5);
+ 143   1        lcden=1;
+ 144   1        delayms(5);
+ 145   1        lcden=0;
+ 146   1      }
+ 147          //左轮前进
+ 148          void left_motor_go(){
+ 149   1        int1=1;
+ 150   1        int2=0;
+ 151   1      }
+ 152          //左轮后退
+ 153          void left_motor_back(){
+ 154   1        int1=0;
+ 155   1        int2=1;
+ 156   1      }
+ 157          //左轮停止
+ 158          void left_motor_stop(){
+ 159   1        int1=0;
+ 160   1        int2=0;
+ 161   1      }
+ 162          //右轮前进
+ 163          void right_motor_go(){
+ 164   1        int3=1;
+ 165   1        int4=0;
+ 166   1      }
+ 167          //右轮后退
+ 168          void right_motor_back(){
+ 169   1        int3=0;
+ 170   1        int4=1;
+ 171   1      }
+ 172          //右轮停止
+ 173          void right_motor_stop(){
+ 174   1        int3=0;
+ 175   1        int4=0;
+ 176   1      }
+ 177          //lcd1602显示转速
+C51 COMPILER V9.00   TESTSOUND                                                             01/08/2017 10:39:52 PAGE 4   
+
+ 178          /*void display1602(uint bai0,uint shi0,uint ge0,uint bai1,uint shi1,uint ge1){
+ 179            P2=0x00;
+ 180            write_com(0x82);
+ 181            write_data(table[bai0]);
+ 182            write_data(table[shi0]);
+ 183            write_data(table[ge0]);
+ 184            
+ 185            write_com(0x80+0x08);
+ 186            write_data(table[bai1]);
+ 187            write_data(table[shi1]);
+ 188            write_data(table[ge1]);
+ 189            
+ 190            write_com(0x80+0x44);
+ 191            write_data(table[10]);
+ 192            write_data(table[10]);
+ 193            write_data(table[10]);
+ 194          }*/
+ 195          /*void timer0_start(){
+ 196            TMOD=0x21;//timer0 count to speed, timer1 to UART
+ 197            TH0=(65536-50000)/256;//50ms
+ 198            TL0=(65536-50000)%256;//50ms
+ 199            EA=1;
+ 200            ET0=1;
+ 201            TR0=1;
+ 202          }*/
+ 203          void timer0_start(){
+ 204   1        TMOD=0x21;//timer0 count to speed, timer1 to UART
+ 205   1        TH0=0;
+ 206   1        TL0=0;
+ 207   1        EA=1;
+ 208   1        ET0=1;
+ 209   1        //TR0=1;
+ 210   1      }
+ 211          void measureDistance_init(){
+ 212   1        trig=0;
+ 213   1        echo=0;
+ 214   1      }
+ 215          void measureDistance_start(){
+ 216   1        trig=1;
+ 217   1        _nop_(); 
+ 218   1        _nop_(); 
+ 219   1        _nop_(); 
+ 220   1        _nop_(); 
+ 221   1        _nop_(); 
+ 222   1        _nop_(); 
+ 223   1        _nop_(); 
+ 224   1        _nop_(); 
+ 225   1        _nop_(); 
+ 226   1        _nop_(); 
+ 227   1        _nop_(); 
+ 228   1        _nop_(); 
+ 229   1        _nop_(); 
+ 230   1        _nop_(); 
+ 231   1        _nop_(); 
+ 232   1        _nop_(); 
+ 233   1        _nop_();
+ 234   1        _nop_(); 
+ 235   1        _nop_(); 
+ 236   1        _nop_(); 
+ 237   1        _nop_();
+ 238   1        trig=0;
+ 239   1      }
+C51 COMPILER V9.00   TESTSOUND                                                             01/08/2017 10:39:52 PAGE 5   
+
+ 240          void measureDistance_cal(){
+ 241   1        //measure the distance
+ 242   1        //while(!echo);
+ 243   1        //TR0=1;
+ 244   1        //while(echo);
+ 245   1        //TR0=0;
+ 246   1        //while(!echo);
+ 247   1        //TR0=1;
+ 248   1        //while(echo);
+ 249   1        //TR0=0;
+ 250   1        time=TH0*256+TL0+65536*count_dis;
+ 251   1        //time=2000;
+ 252   1        TH0=0;
+ 253   1        TL0=0;
+ 254   1        distance=(time*1.7)/100;
+ 255   1        if(distance>=200){
+ 256   2          distance=0;
+ 257   2        }else{
+ 258   2          if(distance<=20){
+ 259   3            feng=0;
+ 260   3            left_motor_go();
+ 261   3            right_motor_stop();
+ 262   3            delayms(5000);
+ 263   3            left_motor_go();
+ 264   3            right_motor_go();
+ 265   3            delayms(5000);
+ 266   3            feng=1;     
+ 267   3          }
+ 268   2          bai=distance/100;
+ 269   2          shi=distance%100/10;
+ 270   2          ge=distance%100%10;
+ 271   2          write_com(0x80+0x44);
+ 272   2          write_data(table[bai]);
+ 273   2          write_data(table[shi]);
+ 274   2          write_data(table[ge]);
+ 275   2          delayms(10);
+ 276   2        }
+ 277   1          /*if(distance<=20){
+ 278   1             feng=0;
+ 279   1             left_motor_stop();
+ 280   1             right_motor_stop();
+ 281   1             delayms(2000);//wait
+ 282   1             left_motor_go();
+ 283   1             right_motor_stop();
+ 284   1             delayms(2000);
+ 285   1             left_motor_go();
+ 286   1             right_motor_go();
+ 287   1             feng=1;      
+ 288   1          }*/
+ 289   1      }
+ 290          void main(){
+ 291   1        //timer0_start();//measure speed
+ 292   1        lcd_init();
+ 293   1        left_motor_go();
+ 294   1        right_motor_go();
+ 295   1        //measureDistance_init();
+ 296   1        while(1){   
+ 297   2          //debug
+ 298   2          //measureDistance_start();
+ 299   2          //measureDistance_cal();
+ 300   2        }
+ 301   1      }
+C51 COMPILER V9.00   TESTSOUND                                                             01/08/2017 10:39:52 PAGE 6   
+
+ 302          void timer0() interrupt 1{
+ 303   1        TH0=0;
+ 304   1        TL0=0;
+ 305   1        count_dis++;
+ 306   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    592    ----
+   CONSTANT SIZE    =     22    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     50    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

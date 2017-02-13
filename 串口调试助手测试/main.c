@@ -7,15 +7,15 @@ uchar code table[]="Iloveyou";
 //main
 void init(){
 	TMOD=0x20;//
-	TH1=0xfd;//¼
-	TL1=0xfd;//¼
-	TR1=1;//¨
+	TH1=0xfd;//?
+	TL1=0xfd;//?
+	TR1=1;//?
 
 	
 	SM0=0;//
 	SM1=1;
 	REN=1;//
-	EA=1;//­
+	EA=1;//?
 	ES=1;//
 }
 void main(){

@@ -1,0 +1,63 @@
+C51 COMPILER V9.00   FENG                                                                  01/13/2017 18:31:30 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE FENG
+OBJECT MODULE PLACED IN feng.OBJ
+COMPILER INVOKED BY: D:\Program Files\Keil5\C51\BIN\C51.EXE feng.c OPTIMIZE(8,SPEED) DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+*** WARNING C500 IN LINE 1 OF FENG.C: LICENSE ERROR (R208: RENEW LICENSE ID CODE (LIC))
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          
+   4          #define uchar unsigned char 
+   5          #define uint unsigned int
+   6          
+   7          sbit beep=P2^3;
+   8          sbit kaiguan=P3^0;
+   9          
+  10          void delay()       //??0.5ms?????
+  11          {
+  12   1        uchar a;
+  13   1        for(a=450;a>0;a--)
+  14   1        {
+  15   2          _nop_();
+  16   2        }
+  17   1      }
+  18          void main()
+  19          {
+  20   1        while(1)
+  21   1        {
+  22   2          if(!kaiguan)
+  23   2          {
+  24   3            uint m;
+  25   3            for(m=800;m>0;m--)    //????0.5ms*800
+  26   3            {
+  27   4              beep=~beep;   
+  28   4              delay();     //2000HZ????
+  29   4            }
+  30   3            for(m=500;m>0;m--)   //????0.5ms*2*500
+  31   3            {
+  32   4              beep=~beep;
+  33   4              delay();
+  34   4              delay();    //1000HZ????
+  35   4            }
+  36   3          }
+  37   2        }
+  38   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     74    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
